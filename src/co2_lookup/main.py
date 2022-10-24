@@ -3,7 +3,6 @@ import pandas as pd
 import numpy
 from datetime import datetime
 from parseIngredientString import parseIngredientString
-#from calcCO2 import calcCO2
 from Products import Products
 import warnings
 supplierDb = 'Supplier DB.csv'
