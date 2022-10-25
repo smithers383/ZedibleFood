@@ -4,7 +4,7 @@ import numpy
 from datetime import datetime
 from parseIngredientString import parseIngredientString
 from Products import Products
-import warnings
+
 supplierDb = 'Supplier DB.csv'
 ingredientCols=[0,1,2,3,4]
 supplierSkipRows = 0
@@ -13,21 +13,21 @@ masterPdHeaders=['Kategorie','Name DE','Name EN','CO2perKg']
 pdMaster = pd.read_csv('Master Db (v3).csv',delimiter=',',header=0)
 pdUser = pd.read_csv('user.csv',delimiter=',')
 
+defaultPercentagaes = pd.read_csv('defaultPercentages.csv',delimiter=',')
+
 # make lower case
 pdUser['Item'] = pdUser['Item'].str.casefold()
 pdUser['SupplierDB'] = pdUser['SupplierDB'].str.casefold()
 pdMaster['Name EN'] = pdMaster['Name EN'].str.casefold()
 pdIngredients['Ingredients'] = pdIngredients['Ingredients'].str.casefold()
-
-
-#parseIngredientString(pdIngredients.Ingredients[102])
-#product = Products(parseIngredientString(pdIngredients.Ingredients[968]),pdMaster,pdUser)
-#product.CO2
-#pdIngredients['IngredientDict'] = [parseIngredientString(ingredientString) for ingredientString in pdIngredients.Ingredients]
+defaultPercentagaes['Item'] = defaultPercentagaes['Item'].str.casefold()
+defaultPercentagaes['E_Number'] = defaultPercentagaes['E_Number'].str.casefold()
 
 # things that are bad
 # string seperated by full stops
 
+#TODO
+# need to have a list of preservatives ect that we can assing 0.1% to by default.
 
 date_time = datetime.now().strftime("%m_%d_%Y_%H%M%S")
 
@@ -45,7 +45,7 @@ for index, ingredientString in pdIngredients.Ingredients.items():
         lastPercent = prcentCom
     if isinstance(ingredientString, str):
         try:
-            product = Products(parseIngredientString(ingredientString),pdMaster,pdUser)
+            product = Products(parseIngredientString(ingredientString),pdMaster,pdUser,defaultPercentagaes)
             CO2perKG[index] = product.totalCO2
             main[index] = product.databaseIngredients
             supplier[index] = product.supplierIngredients
@@ -66,22 +66,3 @@ pdIngredients['Main'] = main
 pdIngredients['CO2perKG'] = CO2perKG
 pdIngredients.to_csv('output_Db_'+date_time+'.csv',sep=',')
 
-
-#for index, ingredientString in pdIngredients.Ingredients.items():
-#    #print(index,nTotal)
-#    if isinstance(ingredientString, str):
-#        results = calcCO2(parseIngredientString(ingredientString),pdMaster,pdUser)
-#        CO2perKG[index] = results[0]
-#        main[index] = [item.mainName for item in results[1] if len(item.mainName) > 0 ]
-#        supplier[index] = [item.supplierName for item in results[1] if len(item.supplierName) > 0]
-#        matched[index] = [item.matchedName for item in results[1] if len(item.matchedName) > 0]
-#        missing[index] = [item.missingName for item in results[1] if len(item.missingName) > 0]
-#print("date and time:",date_time)
-
-#pdIngredients['MissingName'] = missing
-#pdIngredients['MatchedName'] = matched
-#pdIngredients['Supplier'] = supplier
-#pdIngredients['Main'] = main
-#pdIngredients['CO2perKG'] = CO2perKG
-#pdIngredients['CO2perKG'] = [calcCO2(pdMaster,parseIngredientString(ingredientString)) for ingredientString in pdIngredients.Ingredients]
-#pdIngredients.to_csv('output_Db_'+date_time+'.csv',sep=',')

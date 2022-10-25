@@ -1,2 +1,3 @@
 *.csv
-venv/
+.venv
+src/co2_lookup/__pycache__

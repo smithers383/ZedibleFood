@@ -10,10 +10,12 @@ class Products:
     def __init__(self, \
             ingredientStringDict: dict,\
             mainDB: pandas.DataFrame,\
-            userDB: pandas.DataFrame):
+            userDB: pandas.DataFrame,\
+            defaultPercentages: pandas.DataFrame):
         self.ingredientStringDict = ingredientStringDict
         self.mainDB = mainDB
         self.userDB = userDB
+        self.defaultPercentages = defaultPercentages
         self.calcPercentages = []
         self.ingredients = self.getIngredients()
         self.subProducts = self.getSubProducts()
@@ -85,24 +87,36 @@ class Products:
         else:
             return returnProducts
 
+    def getDefaultPercentage(self,ingredient: str) -> float:
+        matchItem = self.defaultPercentages['Item']==ingredient
+        if any(matchItem):
+            return self.defaultPercentages['Fraction'][matchItem].values[0]
+        match_E_Number= self.defaultPercentages['E_Number']==ingredient
+        if any(match_E_Number):
+            return self.defaultPercentages['Fraction'][match_E_Number].values[0]
+        return numpy.nan
+
     @property
     def percentages(self) -> float:
-
-        percentages = [self.percentStr2Float(self.ingredientStringDict[percentValStr][0])\
-            for percentValStr in self.ingredientStringDict]
-
+        percentages = [numpy.nan] * len(self.ingredientStringDict)
+        for i,ingredientStr in enumerate(self.ingredientStringDict):
+            supplierPercent = self.ingredientStringDict[ingredientStr][0]
+            if len(supplierPercent) > 0:
+                percentages[i] = self.percentStr2Float(supplierPercent)
+            else:
+                percentages[i] = self.getDefaultPercentage(ingredientStr)
         return percentages
     
     
     def getIngredients(self):
-        return [Ingredients(ingredientStr,self.mainDB,self.userDB) for ingredientStr in self.ingredientStringDict]
+        return [Ingredients(ingredientStr,self.mainDB,self.userDB,self.defaultPercentages) for ingredientStr in self.ingredientStringDict]
 
     @property
     def anySubIngredients(self):
         return any([len(self.ingredientStringDict[ingredientStr][1])>0 for ingredientStr in self.ingredientStringDict])
 
     def getSubProducts(self):    
-        return [Products(self.ingredientStringDict[ingredient.supplierName][1],self.mainDB,self.userDB)\
+        return [Products(self.ingredientStringDict[ingredient.supplierName][1],self.mainDB,self.userDB,self.defaultPercentages)\
              for ingredient in self.ingredients]
 
        # return [Products(self.ingredientStringDict[ingredient.supplierName][1],self.mainDB,self.userDB)\

@@ -10,9 +10,11 @@ class Ingredients:
     
     def __init__(self,supplierName: str,\
             mainDB: pandas.DataFrame,\
-            userDB: pandas.DataFrame):
+            userDB: pandas.DataFrame,\
+            defaultPercentages: pandas.DataFrame):
         self.mainDB = mainDB
         self.userDB = userDB
+        self.defaultPercentages = defaultPercentages
         self.supplierName = supplierName
         self.lookupCO2()
 
@@ -47,57 +49,53 @@ class Ingredients:
         else:
             return np.nan
 
-    def isDirectMatch(self,matchString: str) -> bool:
-        directMatch = self.mainDB['Name EN']==matchString
+    def isDirectMatch(self,matchString: str,dataBase: pandas.DataFrame,title: str) -> bool:
+        directMatch = dataBase[title]==matchString # Name EN
         return any(directMatch)
-
-    def isUserMatch(self,matchString: str) -> bool:
-        userMatch = self.userDB['Item'] == matchString
-        return any(userMatch)
  
-    def isUserPluralMatch(self,matchString: str) -> bool:
+    def isDirectPluralMatch(self,matchString: str,dataBase: pandas.DataFrame,title: str) -> bool:
         if self.isPlural(matchString):
-            return self.isUserMatch(matchString[:-1])
+            return self.isDirectMatch(matchString[:-1],dataBase,title)
         else:
             return False
 
-    def isDirectPluralMatch(self,matchString: str) -> bool:
-        if self.isPlural(matchString):
-            return self.isDirectMatch(matchString[:-1])
-        else:
-            return False
-
-    def isCloseMatch(self,matchString: str) -> bool:
-        containtMatch = self.mainDB['Name EN'].str.contains(matchString,regex=False)
+    def isCloseMatch(self,matchString: str,dataBase: pandas.DataFrame,title: str) -> bool:
+        containtMatch = dataBase[title].str.contains(matchString,regex=False)
         isLong = len(matchString) > 3 
         isMatch = containtMatch.any()
         goodMatch = isLong and isMatch
         return goodMatch
     
-    def getCloseMatch(self,matchString: str) -> str:
-        containtMatch = self.mainDB['Name EN'].str.contains(matchString,regex=False)
-        closestMatch = min(self.mainDB['Name EN'][containtMatch].values,key=len)
+    def getCloseMatch(self,matchString: str,dataBase: pandas.DataFrame,title: str) -> str:
+        containtMatch = dataBase[title].str.contains(matchString,regex=False)
+        closestMatch = min(dataBase[title][containtMatch].values,key=len)
         return closestMatch
 
     def lookupCO2(self):
-        if self.isUserMatch(self.supplierName): 
-            self.mainName = self.userDB['SupplierDB'][self.userDB['Item'] == self.supplierName].values[0]
+        userCustomTitle = 'Item'
+        userSupplierTitle = 'SupplierDB'
+        mainDBTitle = 'Name EN'
+        # User Match
+        if self.isDirectMatch(self.supplierName,self.userDB,userCustomTitle): 
+            self.mainName = self.userDB[userSupplierTitle][self.userDB[userCustomTitle] == self.supplierName].values[0]
             return
 
-        if self.isDirectMatch(self.supplierName):
+        # Main DB match
+        if self.isDirectMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.supplierName
             return
 
-        if self.isDirectPluralMatch(self.supplierName):
+        if self.isDirectPluralMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.supplierName[:-1]
             return
-
-        if self.isUserPluralMatch(self.supplierName):
-            self.mainName = self.userDB['SupplierDB'][self.userDB['Item'] == self.supplierName[:-1]].values[0]
+        
+        # User Plural Match
+        if self.isDirectPluralMatch(self.supplierName,self.mainDB,mainDBTitle):
+            self.mainName = self.userDB[userSupplierTitle][self.userDB[userCustomTitle] == self.supplierName[:-1]].values[0]
             return
 
-        if self.isCloseMatch(self.supplierName):
-            self.mainName = self.getCloseMatch(self.supplierName)
+        if self.isCloseMatch(self.supplierName,self.mainDB,mainDBTitle):
+            self.mainName = self.getCloseMatch(self.supplierName,self.mainDB,mainDBTitle)
       
         # it is missing :(
 
