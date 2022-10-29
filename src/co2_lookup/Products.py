@@ -73,7 +73,7 @@ class Products:
     def supplierIngredients(self) -> str:
         productName = [item.supplierName for item in self.ingredients if len(self.ingredients) > 0 and len(item.supplierName) > 0]
         calcPercentages = self.calcPercentages
-        product = [product+" {:0.1f}%".format(calcPercentages[i]*100) for i, product in enumerate(productName)]
+        product = [product+" {:0.2f}%".format(calcPercentages[i]*100) for i, product in enumerate(productName)]
 
         if self.anySubIngredients:
             subProductsLists = [subProduct.supplierIngredients for subProduct in self.subProducts if len(subProduct.supplierIngredients) > 0 ]
@@ -166,7 +166,7 @@ class Products:
         if len(string_in) == 0:
             return numpy.nan
         #try:
-        while string_in[-1]=='%':
+        while string_in[-1]=='%' or string_in[-1]=='.':
             string_in = string_in[:-1]
             if len(string_in) == 0:
                 return numpy.nan

@@ -72,12 +72,15 @@ class Ingredients:
         return closestMatch
 
     def lookupCO2(self):
-        userCustomTitle = 'Item'
+        userMainTitle = 'MainDB'
         userSupplierTitle = 'SupplierDB'
         mainDBTitle = 'Name EN'
         # User Match
-        if self.isDirectMatch(self.supplierName,self.userDB,userCustomTitle): 
-            self.mainName = self.userDB[userSupplierTitle][self.userDB[userCustomTitle] == self.supplierName].values[0]
+        if self.isDirectMatch(self.supplierName,self.userDB,userSupplierTitle): 
+            try:
+                self.mainName = self.userDB[userMainTitle][self.userDB[userSupplierTitle] == self.supplierName].values[0]
+            except:
+                print("hi")
             return
 
         # Main DB match
@@ -91,7 +94,7 @@ class Ingredients:
         
         # User Plural Match
         if self.isDirectPluralMatch(self.supplierName,self.mainDB,mainDBTitle):
-            self.mainName = self.userDB[userSupplierTitle][self.userDB[userCustomTitle] == self.supplierName[:-1]].values[0]
+            self.mainName = self.userDB[userMainTitle][self.userDB[userSupplierTitle] == self.supplierName[:-1]].values[0]
             return
 
         if self.isCloseMatch(self.supplierName,self.mainDB,mainDBTitle):
