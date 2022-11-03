@@ -1,0 +1,579 @@
+E_Number,Item,Fraction
+E100,Curcumin,0.001
+E101,Riboflavin,0.001
+E101,Riboflavin-5'-phosphate,0.001
+E102,Tartrazine,0.001
+E104,Quinoline yellow,0.001
+E110,Sunset Yellow FCF,0.001
+E110,Orange Yellow S,0.001
+E120,Cochineal,0.001
+E120,Carminic acid,0.001
+E120,Carmines,0.001
+E122,Azorubine,0.001
+E122,Carmoisine,0.001
+E123,Amaranth,0.001
+E124,Ponceau 4R,0.001
+E124,Cochineal Red A,0.001
+E127,Erythrosine,0.001
+E129,Allura Red AC,0.001
+E131,Patent Blue V,0.001
+E132,lndigotine,0.001
+E132,Indigo Carmine,0.001
+E133,Brilliant Blue FCF,0.001
+E140,Chlorophylls and chlorophyllins,0.001
+E141,Copper complexes of chlorophyll and chlorophyllins,0.001
+E142,Green S,0.001
+E150a,Plain caramel,0.001
+E150b,Caustic sulphite caramel,0.001
+E150c,Ammonia caramel,0.001
+E150d,Sulphite ammonia caramel,0.001
+E151,Brilliant Black BN,0.001
+E151,Black PN,0.001
+E153,Vegetable carbon,0.001
+E155,Brown HT,0.001
+E160a,Carotenes,0.001
+E160b(i),"Annatto, bixin",0.001
+E160b(ii),"Annatto, norbixin",0.001
+E160c,Paprika extract,0.001
+E160c,Capsanthian,0.001
+E160c,Capsorubin,0.001
+E160d,Lycopene,0.001
+E160e,Beta-apo-8'-carotenal (C30),0.001
+E161b,Lutein,0.001
+E161g,Canthaxanthin,0.001
+E162,Beetroot Red,0.001
+E162,Betanin,0.001
+E163,Anthocyanins,0.001
+E170,Calcium carbonate,0.001
+E171,Titanium dioxide,0.001
+E172,Iron oxides and hydroxides,0.001
+E173,Aluminium,0.001
+E174,Silver,0.001
+E175,Gold,0.001
+E180,Litholrubine BK,0.001
+E200,Sorbic acid,0.001
+E202,Potassium sorbate,0.001
+E210,Benzoic acid,0.001
+E211,Sodium benzoate,0.001
+E212,Potassium benzoate,0.001
+E213,Calcium benzoate,0.001
+E214,Ethyl p-hydroxybenzoate,0.001
+E215,Sodium ethyl p-hydroxybenzoate,0.001
+E218,Methyl p-hydroxybenzoate,0.001
+E219,Sodium methyl p-hydroxybenzoate,0.001
+E220,Sulphur dioxide,0.001
+E221,Sodium sulphite,0.001
+E222,Sodium hydrogen sulphite,0.001
+E223,Sodium metabisulphite,0.001
+E224,Potassium metabisulphite,0.001
+E226,Calcium sulphite,0.001
+E227,Calcium hydrogen sulphite,0.001
+E228,Potassium hydrogen sulphite,0.001
+E234,Nisin,0.001
+E235,Natamycin,0.001
+E239,Hexamethylene tetramine,0.001
+E242,Dimethyl dicarbonate,0.001
+E243,Ethyl lauroyl arginate,0.001
+E249,Potassium nitrite,0.001
+E250,Sodium nitrite,0.001
+E251,Sodium nitrate,0.001
+E252,Potassium nitrate,0.001
+E280,Propionic acid,0.001
+E281,Sodium propionate,0.001
+E282,Calcium propionate,0.001
+E283,Potassium propionate,0.001
+E284,Boric acid,0.001
+E285,Sodium tetraborate,0.001
+E285,borax,0.001
+E1105,Lysozyme,0.001
+E300,Ascorbic acid,0.001
+E301,Sodium ascorbate,0.001
+E302,Calcium ascorbate,0.001
+E304,Fatty acid esters of ascorbic acid,0.001
+E306,Tocopherols,0.001
+E307,Alpha-tocopherol,0.001
+E308,Gamma-tocopherol,0.001
+E309,Delta-tocopherol,0.001
+E310,Propyl gallate,0.001
+E315,Erythorbic acid,0.001
+E316,Sodium erythorbate,0.001
+E319,Tertiary-butyl hydroquinone (TBHQ),0.001
+E320,Butylated hydroxyanisole (BHA),0.001
+E321,Butylated hydroxytoluene (BHT),0.001
+E392,Extracts of rosemary,0.001
+E586,4-Hexylresorcinol,0.001
+E420,(i) Sorbitol,0.001
+E420,(ii) Sorbitol syrup,0.001
+E421,Mannitol,0.001
+E950,Acesulfame K,0.001
+E951,Aspartame,0.001
+E952,Cyclamic acid and its Na and Ca salts,0.001
+E953,lsomalt,0.001
+E954,"Saccharin and its Na, K and Ca salts",0.001
+E955,Sucralose,0.001
+E957,Thaumatin,0.001
+E959,Neohesperidine DC,0.001
+E960,Steviol glycoside,0.001
+E961,Neotame,0.001
+E962,Salt of aspartame-acesulfame,0.001
+E964,Polyglycitol syrup,0.001
+E965,Maltitol,0.001
+E965,Maltitol syrup,0.001
+E966,Lactitol,0.001
+E967,Xylitol,0.001
+E968,Erythritol,0.001
+E969,Advantame,0.001
+E322,Lecithins,0.001
+E400,Alginic acid,0.001
+E401,Sodium alginate,0.001
+E402,Potassium alginate,0.001
+E403,Ammonium alginate,0.001
+E404,Calcium alginate,0.001
+E405,"Propane-1,2-diol alginate",0.001
+E406,Agar,0.001
+E407,Carrageenan,0.001
+E407a,Processed eucheuma seaweed,0.001
+E410,Locust bean gum,0.001
+E410,carob gum,0.001
+E412,Guar gum,0.001
+E413,Tragacanth,0.001
+E414,Acacia gum,0.001
+E414,gum arabic,0.001
+E415,Xanthan gum,0.001
+E416,Karaya gum,0.001
+E417,Tara gum,0.001
+E418,Gellan gum,0.001
+E425,Konjac,0.001
+E426,Soybean hemicellulose,0.001
+E427,Cassia gum,0.001
+E432,Polyoxyethylene sorbitan monolaurate,0.001
+E432,Polysorbate 20,0.001
+E433,Polyoxyethylene sorbitan mono-oleate,0.001
+E433,Polysorbate 80,0.001
+E434,Polyoxyethylene sorbitan monopalmitate,0.001
+E434,Polysorbate 40,0.001
+E435,Polyoxyethylene sorbitan monostearate,0.001
+E435,Polysorbate 60,0.001
+E436,Polyoxyethylene sorbitan tristearate,0.001
+E436,Polysorbate 65,0.001
+E440,Pectins,0.001
+E442,Ammonium phosphatides,0.001
+E444,Sucrose acetate isobutyrate,0.001
+E445,Glycerol esters of wood rosins,0.001
+E460,Cellulose,0.001
+E461,Methyl cellulose,0.001
+E462,Ethyl cellulose,0.001
+E463,Hydroxypropyl cellulose,0.001
+E464,Hydroxypropyl methyl cellulose,0.001
+E465,Ethyl methyl cellulose,0.001
+E466,Carboxy methyl cellulose,0.001
+E468,Crosslinked sodium carboxy methyl cellulose,0.001
+E469,Enzymatically hydrolysed carboxy methyl cellulose,0.001
+E470a,"Sodium, potassium and calcium salts of fatty acids",0.001
+E470b,Magnesium salts of fatty acids,0.001
+E471,Mono- and diglycerides of fatty acids,0.001
+E472a,Acetic acid esters of mono- and diglycerides of fatty acids,0.001
+E472b,Lactic acid esters of mono- and diglycerides of fatty acids,0.001
+E472c,Citric acid esters of mono- and diglycerides of fatty acids,0.001
+E472d,Tartaric acid esters of mono- and diglycerides of fatty acids,0.001
+E472e,Mono- and diacetyltartaric acid esters of mono- and diglycerides of fatty acids,0.001
+E472f,Mixed acetic and tartaric acid esters of mono- and diglycerides of fatty acids,0.001
+E473,Sucrose esters of fatty acids,0.001
+E474,Sucroglycerides,0.001
+E475,Polyglycerol esters of fatty acids,0.001
+E476,Polyglycerol polyricinoleate,0.001
+E477,"Propane-1,2-diol esters of fatty acids",0.001
+E479b,Thermally oxidised soya bean oil interacted with mono­ and diglycerides of fatty acids,0.001
+E481,Sodium stearoyl-2-lactylate,0.001
+E482,Calcium stearoyl-2-lactylate,0.001
+E483,Stearyl tartrate,0.001
+E491,Sorbitan monostearate,0.001
+E492,Sorbitan tristearate,0.001
+E493,Sorbitan monolaurate,0.001
+E494,Sorbitan monooleate,0.001
+E495,Sorbitan monopalmitate,0.001
+E1103,Invertase,0.001
+E260,Acetic acid,0.001
+E261,Potassium acetate,0.001
+E262,Sodium acetate,0.001
+E263,Calcium acetate,0.001
+E270,Lactic acid,0.001
+E290,Carbon dioxide,0.001
+E296,Malic acid,0.001
+E297,Fumaric acid,0.001
+E325,Sodium lactate,0.001
+E326,Potassium lactate,0.001
+E327,Calcium lactate,0.001
+E330,Citric acid,0.001
+E331,Sodium citrates,0.001
+E332,Potassium citrates,0.001
+E333,Calcium citrates,0.001
+E334,Tartaric acid (L-(+)),0.001
+E335,Sodium tartrates,0.001
+E336,Potassium tartrates,0.001
+E337,Sodium potassium tartrate,0.001
+E338,Phosphoric acid,0.001
+E339,Sodium phosphates,0.001
+E340,Potassium phosphates,0.001
+E341,Calcium phosphates,0.001
+E343,Magnesium phosphates,0.001
+E350,Sodium malates,0.001
+E351,Potassium malate,0.001
+E352,Calcium malates,0.001
+E353,Metatartaric acid,0.001
+E354,Calcium tartrate,0.001
+E355,Adipic acid,0.001
+E356,Sodium adipate,0.001
+E357,Potassium adipate,0.001
+E363,Succinic acid,0.001
+E380,Triammonium citrate,0.001
+E385,Calcium disodium ethylene diamine tetra-acetate,0.001
+E385,calcium disodium EDTA,0.001
+E422,Glycerol,0.001
+E423,Octenyl succinic acid modified gum Arabic,0.001
+E450,Diphosphates,0.001
+E451,Triphosphates,0.001
+E452,Polyphosphates,0.001
+E459,Beta-cyclodextrin,0.001
+E499,Stigmasterol-rich plant sterols,0.001
+E500,Sodium carbonates,0.001
+E501,Potassium carbonates,0.001
+E503,Ammonium carbonates,0.001
+E504,Magnesium carbonates,0.001
+E507,Hydrochloric acid,0.001
+E508,Potassium chloride,0.001
+E509,Calcium chloride,0.001
+E511,Magnesium chloride,0.001
+E512,Stannous chloride,0.001
+E513,Sulphuric acid,0.001
+E514,Sodium sulphates,0.001
+E515,Potassium sulphates,0.001
+E516,Calcium sulphate,0.001
+E517,Ammonium sulphate,0.001
+E520,Aluminium sulphate,0.001
+E521,Aluminium sodium sulphate,0.001
+E522,Aluminium potassium sulphate,0.001
+E523,Aluminium ammonium sulphate,0.001
+E524,Sodium hydroxide,0.001
+E525,Potassium hydroxide ,0.001
+E526,Calcium hydroxide,0.001
+E527,Ammonium hydroxide,0.001
+E528,Magnesium hydroxide,0.001
+E529,Calcium oxide,0.001
+E530,Magnesium oxide,0.001
+E535,Sodium ferrocyanide,0.001
+E536,Potassium ferrocyanide,0.001
+E538,Calcium ferrocyanide,0.001
+E541,Sodium aluminium phosphate,0.001
+E551,Silicon dioxide,0.001
+E552,Calcium silicate,0.001
+E553a,Magnesium silicate,0.001
+E553a,Magnesium trisilicate,0.001
+E553b,Talc,0.001
+E554,Sodium aluminium silicate,0.001
+E555,Potassium aluminium silicate,0.001
+E570,Fatty acids,0.001
+E574,Gluconic acid,0.001
+E575,Glucono delta-lactone,0.001
+E576,Sodium gluconate,0.001
+E577,Potassium gluconate,0.001
+E578,Calcium gluconate,0.001
+E579,Ferrous gluconate,0.001
+E585,Ferrous lactate,0.001
+E620,Glutamic acid,0.001
+E621,Monosodium glutamate,0.001
+E622,Monopotassium glutamate,0.001
+E623,Calcium diglutamate,0.001
+E624,Monoammonium glutamate,0.001
+E625,Magnesium diglutamate,0.001
+E626,Guanylic acid,0.001
+E627,Disodium guanylate,0.001
+E628,Dipotassium guanylate,0.001
+E629,Calcium guanylate,0.001
+E630,lnosinic acid,0.001
+E631,Disodium inosinate,0.001
+E632,Dipotassium inosinate,0.001
+E633,Calcium inosinate,0.001
+E634,Calcium 5'-ribonucleotides,0.001
+E635,Disodium 5'-ribonucleotides,0.001
+E640,Glycine and its sodium salt,0.001
+E641,L-leucine,0.001
+E650,Zinc acetate,0.001
+E900,Dimethylpolysiloxane,0.001
+E901,"Beeswax, white and yellow",0.001
+E902,Candelilla wax,0.001
+E903,Carnauba wax,0.001
+E904,Shellac,0.001
+E905,Microcrystalline wax,0.001
+E907,Hydrogenated Poly-1-Decene,0.001
+E914,Oxidised Polyethylene wax,0.001
+E920,L-Cysteine,0.001
+E927b,Carbamide,0.001
+E938,Argon,0.001
+E939,Helium,0.001
+E941,Nitrogen,0.001
+E942,Nitrous oxide,0.001
+E943a,Butane,0.001
+E943b,Iso-butane,0.001
+E944,Propane,0.001
+E948,Oxygen,0.001
+E949,Hydrogen,0.001
+E999,Quillaia extract,0.001
+E1200,Polydextrose,0.001
+E1201,Polyvinylpyrrolidone,0.001
+E1202,Polyvinylpolypyrrolidone,0.001
+E1203,Polyvinyl alcohol,0.001
+E1204,Pullulan,0.001
+E1205,Basic methacrylate copolymer,0.001
+E1206,Neutral methacrylate copolymer,0.001
+E1207,Anionic methacrylate copolymer,0.001
+E1208,Polyvinylpyrrolidone-vinyl acetate copolymer,0.001
+E1209,Polyvinyl alcohol-polyethylene glycol-graft- co-polymer,0.001
+E1404,Oxidised starch,0.001
+E1410,Monostarch phosphate,0.001
+E1412,Distarch phosphate,0.001
+E1413,Phosphated distarch phosphate,0.001
+E1414,Acetylated distarch phosphate,0.001
+E1420,Acetylated starch,0.001
+E1422,Acetylated distarch adipate,0.001
+E1440,Hydroxyl propyl starch,0.001
+E1442,Hydroxy propyl distarch phosphate,0.001
+E1450,Starch sodium octenyl succinate,0.001
+E1451,Acetylated oxidised starch,0.001
+E1452,Starch aluminium Octenyl succinate,0.001
+E1505,Triethyl citrate,0.001
+E1517,Glyceryl diacetate,0.001
+E1517,diacetin,0.001
+E1518,Glyceryl triacetate,0.001
+E1518,triacetin,0.001
+E1519,Benzyl alcohol,0.001
+E1520,"Propan-1,2-diol",0.001
+E1520,propylene glycol,0.001
+E1521,Polyethylene glycol,0.001
+Salt,Salt,0.02
+"sugar, white","sugar, white",0.1735678571
+cocoa butter,cocoa butter,0.1849555556
+milk powder,milk powder,0.05628
+"cocoa, powder","cocoa, powder",0.3445
+apple pectin,apple pectin,0.0076486691
+vanilla beans,vanilla beans,0.0262611111
+"chocolate, dark","chocolate, dark",0.1033333333
+salt,salt,0.0204664736
+baking powder,baking powder,0.0042355556
+figs,figs,0.4766666667
+"plum, raw","plum, raw",0.3925
+"apple, raw, all varieties","apple, raw, all varieties",0.46075
+"orange, raw","orange, raw",0.308
+"cream, whipping, 38 % fat","cream, whipping, 38 % fat",0.985
+"salt, table","salt, table",0.0267410714
+butternut,butternut,0.46595
+rapeseed oil,rapeseed oil,0.3164166667
+water,water,0.2419785714
+"garlic, raw","garlic, raw",0.1071238095
+coconut oil,coconut oil,0.2133333333
+"milk, partly skimmed, 1.5 % fat","milk, partly skimmed, 1.5 % fat",0.9493579221
+"cream, cultured, 18 % fat","cream, cultured, 18 % fat",0.25105625
+"wheat, flour, wholemeal","wheat, flour, wholemeal",0.45625
+"cheese, firm, danbo, 45 % fidm.","cheese, firm, danbo, 45 % fidm.",0.632275
+"cranberry, raw","cranberry, raw",0.2961111111
+"yeast, bakers, compressed","yeast, bakers, compressed",0.0028562303
+vegetable fat,vegetable fat,0.0004330625
+"milk, whole, 3.5 % fat","milk, whole, 3.5 % fat",0.8860557692
+paprika (powder),paprika (powder),0.0081409091
+"raisins, seedless","raisins, seedless",0.16492
+sunflower oil,sunflower oil,0.164
+animal fat,animal fat,0.0125349079
+goat milk,goat milk,0.91614
+"yogurt plain, whole milk","yogurt plain, whole milk",0.57700125
+"eggs, chicken, free-range hens (indoor), raw","eggs, chicken, free-range hens (indoor), raw",0.4446222222
+truffle,truffle,0.157
+olive oil,olive oil,0.3399
+cardamom,cardamom,1
+lemons,lemons,0.965
+"wine, red","wine, red",0.1507
+"brandy, cognac","brandy, cognac",0.4576111111
+"cabbage, white, raw","cabbage, white, raw",0.794
+"blackberry, raw","blackberry, raw",0.4113333333
+coconut milk,coconut milk,0.45572
+"mango, raw","mango, raw",0.5966833333
+passion fruit,passion fruit,0.9
+raspberry jam,raspberry jam,0.9
+"peach, raw","peach, raw",0.9
+quince,quince,0.9
+"raspberry, raw","raspberry, raw",0.2792
+"lemon, raw","lemon, raw",0.30125
+"tangerine, raw","tangerine, raw",0.515
+beetroot juice,beetroot juice,1
+"rhubarb, raw","rhubarb, raw",0.375
+"cheese, brie, 45 % fidm.","cheese, brie, 45 % fidm.",0.302
+apple cider vinegar,apple cider vinegar,0.4196166667
+"apricot, dried","apricot, dried",0.21425
+sesame seeds,sesame seeds,0.0775555556
+pistachios,pistachios,0.06
+sunflower seeds,sunflower seeds,0.2795
+"bread, white, roll, coarse grain","bread, white, roll, coarse grain",0.115
+"wheat, kernels, whole/cracked","wheat, kernels, whole/cracked",0.82
+palm oil,palm oil,0.1095
+starch (corn),starch (corn),0.023075
+apple juice (no packaging),apple juice (no packaging),0.205
+pumpkin seeds,pumpkin seeds,0.15
+dates,dates,0.42
+linseed,linseed,0.045
+rye flour,rye flour,0.35
+"peanuts, oilroasted and salted","peanuts, oilroasted and salted",0.5909
+"cashew nuts, dry roasted","cashew nuts, dry roasted",0.173
+almonds,almonds,0.432
+starch (potato),starch (potato),0.0983333333
+honey,honey,0.146
+"syrup, kitchen","syrup, kitchen",0.1506666667
+corn flour,corn flour,0.3068666667
+"strawberry, raw","strawberry, raw",0.11
+safflower oil,safflower oil,0.01
+"pepper, hot chili, raw","pepper, hot chili, raw",0.1111318182
+corn cob,corn cob,0.8033333333
+buckwheat flour,buckwheat flour,0.4895
+dextrose,dextrose,0.006
+salami,salami,0.97
+"lamb, meat, average values, raw","lamb, meat, average values, raw",0.9348
+pulled pork,pulled pork,0.7627538462
+"sage, dried","sage, dried",0.004
+blue cheese,blue cheese,0.081
+"pepper, black","pepper, black",0.0675846154
+"beef, topside, cap off, raw","beef, topside, cap off, raw",0.9263333333
+"pork, loin, lean, raw","pork, loin, lean, raw",0.7225
+juniper berries,juniper berries,0.0029
+"gooseberry, raw","gooseberry, raw",0.24
+fennel seeds,fennel seeds,0.0098
+deer meat,deer meat,0.1714
+paprika,paprika,0.0076
+mustard seeds,mustard seeds,0.2407
+"pork, mince, 15-20% fat, raw","pork, mince, 15-20% fat, raw",0.966
+cinnamon,cinnamon,0.0016
+cloves,cloves,0.0008
+"duck, flesh only, raw","duck, flesh only, raw",0.375
+"beef, rump, raw","beef, rump, raw",0.315
+cocoa paste,cocoa paste,0.1986
+buttermilk,buttermilk,0.1176666667
+"hazelnut, dried","hazelnut, dried",0.239
+"cheese, hard, parmesan, 32 % fidm.","cheese, hard, parmesan, 32 % fidm.",0.0505
+"currant, black, raw","currant, black, raw",0.1753333333
+barley malt extract,barley malt extract,0.10105
+"breakfast cereal, havrefras","breakfast cereal, havrefras",0.1125
+"tomato, ripe, raw, origin unknown","tomato, ripe, raw, origin unknown",0.7
+"tomato paste, concentrated","tomato paste, concentrated",0.1437571429
+"mustard, yellow, ready made","mustard, yellow, ready made",0.1860909091
+turmeric,turmeric,0.0171
+"onions, spring, raw","onions, spring, raw",0.3053
+red onion,red onion,0.3038
+balsamic vinegar,balsamic vinegar,0.1325
+sherry vinegar,sherry vinegar,0.0856571429
+vegetables,vegetables,0.38
+"apricot, raw","apricot, raw",0.33
+"ginger root, raw","ginger root, raw",0.0743333333
+"pear, raw","pear, raw",0.535
+raspberries,raspberries,0.1513333333
+pepperoni,pepperoni,0.01
+"thyme, dried","thyme, dried",0.01
+jalapenos,jalapenos,0.0466666667
+"parsley, raw","parsley, raw",0.015
+"cheese, semihard, feta, 40 % fidm","cheese, semihard, feta, 40 % fidm",1
+desiccated coconut,desiccated coconut,0.327
+rice,rice,0.549
+"olives, green, pickled, canned","olives, green, pickled, canned",0.5277833333
+capers,capers,0.29
+"tomato juice, canned","tomato juice, canned",0.37425
+white beans,white beans,0.6003333333
+"chickpeas, canned","chickpeas, canned",0.5127
+"oats, rolled, not enriched","oats, rolled, not enriched",0.253
+buckwheat,buckwheat,0.6923333333
+hazelnut oil,hazelnut oil,0.05
+whey powder,whey powder,0.125
+"parsley, dried","parsley, dried",0.0038
+lime juice,lime juice,0.012725
+"coriander, dried","coriander, dried",0.0018
+"strawberries, frozen, unsweetened","strawberries, frozen, unsweetened",0.439
+spices,spices,0.01595
+cumin,cumin,1
+gelatin,gelatin,0.035
+"chives, raw","chives, raw",0.02
+wild mushrooms,wild mushrooms,0.563
+vinegar (malt),vinegar (malt),0.05404
+"herbs, dried","herbs, dried",0.004
+"turnip, raw","turnip, raw",0.17
+"beans, soy, dried, raw","beans, soy, dried, raw",0.2012
+"banana, raw","banana, raw",0.9
+"cherry, raw","cherry, raw",0.3
+half pears in juice,half pears in juice,0.9
+strawberry jam,strawberry jam,0.9
+"blueberry, frozen, unsweetened","blueberry, frozen, unsweetened",0.9
+"pineapple, raw","pineapple, raw",0.9
+"currant, red, raw","currant, red, raw",0.3235
+soybean oil,soybean oil,0.35
+anchovies,anchovies,0.4966666667
+"butter, salt added","butter, salt added",0.07
+"chocolate, milk","chocolate, milk",0.1076666667
+coconut,coconut,0.03
+coffee (brewed),coffee (brewed),0.003
+"olives, black, without stones, in brine","olives, black, without stones, in brine",0.636
+lemon balm,lemon balm,0.002
+"basil, fresh","basil, fresh",0.4055714286
+pine nuts,pine nuts,0.4326666667
+sundried tomatoes,sundried tomatoes,0.408
+"tahin, sesame paste","tahin, sesame paste",0.15465
+"tomato, peeled, canned","tomato, peeled, canned",0.53665
+"sugar, brown","sugar, brown",0.02
+sesame oil,sesame oil,0.0995
+"ajvar, relish","ajvar, relish",0.06685
+lemon juice,lemon juice,0.02432
+orange juice,orange juice,0.181
+rice vinegar,rice vinegar,0.197
+"pepper, sweet, red, raw","pepper, sweet, red, raw",0.228675
+soy sauce,soy sauce,0.2545
+vegan mayo,vegan mayo,0.0928
+"veal, medium fat, raw","veal, medium fat, raw",0.085
+"soy milk, with added calcium","soy milk, with added calcium",0.1265
+horseradish,horseradish,0.1999333333
+"chicken, sausage","chicken, sausage",0.025
+mascarpone,mascarpone,0.192
+mayonnaise,mayonnaise,0.505
+cornichons,cornichons,0.05
+"blueberries, raw","blueberries, raw",0.5285
+mozzarella (from cow's milk),mozzarella (from cow's milk),0.1278
+mango chutney,mango chutney,0.186
+"rosemary, dried","rosemary, dried",0.002
+vegetable stock,vegetable stock,0.018
+"mint, dried","mint, dried",0.1595
+molasses,molasses,0.028
+"lettuce, looseleaf, raw","lettuce, looseleaf, raw",0.3
+red oak leaf salad,red oak leaf salad,0.3
+minced chicken,minced chicken,1
+"carrot, raw","carrot, raw",0.1825
+"tuna, raw","tuna, raw",0.65
+pineapple juice,pineapple juice,1
+"tea, leaves","tea, leaves",0.95
+herbal tea,herbal tea,1
+"rice, parboiled, raw","rice, parboiled, raw",0.6
+chard,chard,0.15
+"dill, raw","dill, raw",0.02
+"beet, red, raw","beet, red, raw",1
+chilli cheese tops,chilli cheese tops,0.61
+"coffee bean, roasted, ground","coffee bean, roasted, ground",0.03
+grapefruit juice,grapefruit juice,0.16
+potatoes,potatoes,0.8
+marinated artichokes,marinated artichokes,0.73
+black beans,black beans,0.49
+"tomato, dried","tomato, dried",0.995
+maple syrup,maple syrup,1
+kidney beans,kidney beans,0.6
+"avocado, raw","avocado, raw",0.425
+chocolate (white),chocolate (white),0.16
+chia,chia,1
+oats,oats,0.268
+"onion, raw","onion, raw",0.25
+pork sausage,pork sausage,0.71
+"bacon, frying, raw","bacon, frying, raw",0.2
+"cod, fillet, raw","cod, fillet, raw",0.58
+"saithe (uk), pollock (us), fillet, frozen","saithe (uk), pollock (us), fillet, frozen",0.535
+"plant paste, pea protein and mushroom","plant paste, pea protein and mushroom",0.17
+"turkey, breast, boiled/smoked, sliced","turkey, breast, boiled/smoked, sliced",0.83
+millet,millet,0.032
