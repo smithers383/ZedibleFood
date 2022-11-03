@@ -1,3 +1,4 @@
+from tkinter.messagebox import showwarning
 import numpy as np
 import pandas
 
@@ -44,7 +45,10 @@ class Ingredients:
     @property
     def CO2(self) -> float:
         if not len(self.mainName) == 0:
-            CO2perKg = self.mainDB['kg CO2 / kg (ohne Flug)'][self.mainDB['Name EN']==self.mainName].values[0] 
+            try:
+                CO2perKg = self.mainDB['kg CO2 / kg (ohne Flug)'][self.mainDB['Name EN']==self.mainName].values[0] 
+            except:
+                print("help")
             return CO2perKg
         else:
             return np.nan
@@ -77,11 +81,14 @@ class Ingredients:
         mainDBTitle = 'Name EN'
         # User Match
         if self.isDirectMatch(self.supplierName,self.userDB,userSupplierTitle): 
-            try:
-                self.mainName = self.userDB[userMainTitle][self.userDB[userSupplierTitle] == self.supplierName].values[0]
-            except:
-                print("hi")
-            return
+            self.mainName = self.userDB[userMainTitle][self.userDB[userSupplierTitle] == self.supplierName].values[0]
+            if self.isDirectMatch(self.mainName,self.mainDB,mainDBTitle): # check it is actually in mainDB
+                return
+            else:
+                returnMessage = "Substitute name:"+self.mainName+" not found in main database\n\
+                        No user substitue made for:"+self.supplierName
+                self.mainName = ''
+                showwarning(title=None, message=returnMessage)
 
         # Main DB match
         if self.isDirectMatch(self.supplierName,self.mainDB,mainDBTitle):
@@ -95,7 +102,10 @@ class Ingredients:
         # User Plural Match
         if self.isDirectPluralMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.userDB[userMainTitle][self.userDB[userSupplierTitle] == self.supplierName[:-1]].values[0]
-            return
+            if self.isDirectMatch(self.mainName,self.mainDB,mainDBTitle): # check it is actually in mainDB
+                return
+            else:
+                self.mainName = ''
 
         if self.isCloseMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.getCloseMatch(self.supplierName,self.mainDB,mainDBTitle)

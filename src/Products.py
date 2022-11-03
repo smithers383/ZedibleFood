@@ -115,12 +115,10 @@ class Products:
     def anySubIngredients(self):
         return any([len(self.ingredientStringDict[ingredientStr][1])>0 for ingredientStr in self.ingredientStringDict])
 
-    def getSubProducts(self):    
+    def getSubProducts(self):   
+        # HJS ad check for sub ingredient in the database 
         return [Products(self.ingredientStringDict[ingredient.supplierName][1],self.mainDB,self.userDB,self.defaultPercentages)\
              for ingredient in self.ingredients]
-
-       # return [Products(self.ingredientStringDict[ingredient.supplierName][1],self.mainDB,self.userDB)\
-       #      if len(self.ingredientStringDict[ingredient.supplierName][1]) > 0 else None for ingredient in self.ingredients]
 
     @property
     def CO2(self) -> list:
@@ -155,8 +153,12 @@ class Products:
             return numpy.sum(numpy.multiply(goodCO2,self.calcPercentages[isGoodCO2]))
         else: # assign the remainder between the remaining nan percentages with valid CO2s
             validNonNanPercentages = list(compress(validPercentages,~numpy.isnan(validPercentages)))
-            remainder = 1 - numpy.sum(validNonNanPercentages)         
-            paddedPercentages = [remainder/sum(numpy.isnan(validPercentages)) if numpy.isnan(percentage) else percentage for percentage in validPercentages]
+            if numpy.sum(validNonNanPercentages) > 1:
+                remainder = 0 # overloaded with percentages - nothing left to assign
+                paddedPercentages = [0 if numpy.isnan(percentage) else percentage/(numpy.sum(validNonNanPercentages)) for percentage in validPercentages]
+            else:
+                remainder = 1 - numpy.sum(validNonNanPercentages)         
+                paddedPercentages = [remainder/sum(numpy.isnan(validPercentages)) if numpy.isnan(percentage) else percentage for percentage in validPercentages]
             calcPercentages[isGoodCO2] = paddedPercentages
             self.calcPercentages = calcPercentages
             return numpy.sum(numpy.multiply(goodCO2,paddedPercentages))
@@ -184,8 +186,6 @@ class Products:
         else:
             returnPercent = float(string_in)/100
         return returnPercent
-#        except:
-            ##warnings.warn("Can't parse "+string_in+" accurately")
-            #return numpy.nan
+
     
 
