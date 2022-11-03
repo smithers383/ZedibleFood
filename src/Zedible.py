@@ -160,9 +160,10 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         CO2perKG = [float] * nTotal
         missing = [str] * nTotal
         main = [str] * nTotal
-        supplier = [str] * nTotal
+        calculate = [str] * nTotal
         matched = [str] * nTotal
         lastPercent = -1
+        list_all_missing = list()
         for index, ingredientString in self.supplier_dataframe.Ingredients.items():
             prcentCom= numpy.floor(100*index/nTotal)
             self.progress_bar.step(1.0/nTotal)
@@ -188,9 +189,10 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
                     showwarning(title=None, message=returnMessage)
                     return
                 main[index] = product.databaseIngredients
-                supplier[index] = product.supplierIngredients
+                calculate[index] = product.calculateIngredients
                 matched[index] = product.matchedIngredients
                 missing[index] = product.missingIngredients
+                list_all_missing.extend(product.missingIngredients)
                 goodPercentage = ~numpy.isnan(product.percentages)
                 if any(goodPercentage):
                     goodIngredients = list(compress(product.databaseIngredients,goodPercentage))
@@ -201,11 +203,12 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
                             self.percentageHistoryDict[key] = self.percentageHistoryDict[key]+ updateDictVals[key]
                         else: 
                             self.percentageHistoryDict[key] = updateDictVals[key]
+            else:
+                missing[index]=''
+                calculate[index] = ''
         print("date and time:",date_time)
         self.supplier_dataframe['missingName'] = missing
-        self.supplier_dataframe['matchedName'] = matched
-        self.supplier_dataframe['supplier'] = supplier
-        self.supplier_dataframe['main'] = main
+        self.supplier_dataframe['Calculation'] = calculate
         self.supplier_dataframe['co2perkg'] = CO2perKG
         saveDir = os.path.dirname(os.path.abspath(self.supplierFile.get(0.0,"end-1c")))
         saveName = os.path.join(saveDir,'output_Db_'+date_time+'.csv')
@@ -223,6 +226,17 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         
         saveName = os.path.join(saveDir,'fraction_history_'+date_time+'.csv')
         percentageHistoryDB.to_csv(saveName,sep=',')
+
+        unique_missing_list = list(set(list_all_missing))
+        count = [ list_all_missing.count(missing_name) for missing_name in unique_missing_list ]
+        missing_data = {'Count':count}
+        unique_missing_dataframe = pd.DataFrame(data=missing_data, index = unique_missing_list)
+        unique_missing_dataframe = unique_missing_dataframe.sort_values(by=['Count'],ascending=False)
+        
+        unique_missing_dataframe.index.name = 'Ingredient'
+        saveDir = os.path.dirname(os.path.abspath(self.supplierFile.get(0.0,"end-1c")))
+        saveName = os.path.join(saveDir,'unqiue_missing_'+date_time+'.csv')
+        unique_missing_dataframe.to_csv(saveName,sep=',')
 
     @staticmethod
     def select_file(csv_title,cur_dir):

@@ -6,7 +6,8 @@ from itertools import compress
 import warnings
 class Products:
 
-
+# HJS potential upgrades
+# Don't overwrite user percentages - hold them constant unless over 100% themselves
     def __init__(self, \
             ingredientStringDict: dict,\
             mainDB: pandas.DataFrame,\
@@ -70,13 +71,13 @@ class Products:
             return returnProducts
 
     @property
-    def supplierIngredients(self) -> str:
-        productName = [item.supplierName for item in self.ingredients if len(self.ingredients) > 0 and len(item.supplierName) > 0]
+    def calculateIngredients(self) -> str:
+        productName = [item.mainName for item in self.ingredients if len(self.ingredients) > 0 and len(item.supplierName) > 0]
         calcPercentages = self.calcPercentages
         product = [product+" {:0.2f}%".format(calcPercentages[i]*100) for i, product in enumerate(productName)]
 
         if self.anySubIngredients:
-            subProductsLists = [subProduct.supplierIngredients for subProduct in self.subProducts if len(subProduct.supplierIngredients) > 0 ]
+            subProductsLists = [subProduct.calculateIngredients for subProduct in self.subProducts if len(subProduct.calculateIngredients) > 0 ]
             subProducts = [product for listProducts in subProductsLists for product in listProducts ]
             returnProducts = product+subProducts
         else:
@@ -89,10 +90,20 @@ class Products:
 
     def getDefaultPercentage(self,ingredient: str) -> float:
         matchItem = self.defaultPercentages['Item']==ingredient
-        if any(matchItem):
+        if any(matchItem): # try ingredient
             return self.defaultPercentages['Fraction'][matchItem].values[0]
         match_E_Number= self.defaultPercentages['E_Number']==ingredient
-        if any(match_E_Number):
+        if any(match_E_Number): # try Enumber
+            return self.defaultPercentages['Fraction'][match_E_Number].values[0]
+        # try user sub
+        if not any(self.userDB['SupplierDB'] == ingredient):
+            return numpy.nan
+        ingredient = self.userDB['MainDB'][self.userDB['SupplierDB'] == ingredient].values[0]
+        matchItem = self.defaultPercentages['Item']==ingredient
+        if any(matchItem): # try ingredient
+            return self.defaultPercentages['Fraction'][matchItem].values[0]
+        match_E_Number= self.defaultPercentages['E_Number']==ingredient
+        if any(match_E_Number): # try Enumber
             return self.defaultPercentages['Fraction'][match_E_Number].values[0]
         return numpy.nan
 
@@ -116,7 +127,6 @@ class Products:
         return any([len(self.ingredientStringDict[ingredientStr][1])>0 for ingredientStr in self.ingredientStringDict])
 
     def getSubProducts(self):   
-        # HJS ad check for sub ingredient in the database 
         return [Products(self.ingredientStringDict[ingredient.supplierName][1],self.mainDB,self.userDB,self.defaultPercentages)\
              for ingredient in self.ingredients]
 
