@@ -12,7 +12,6 @@ from tkinter import filedialog as fd
 from tkinter.messagebox import showwarning
 import os
 from itertools import compress
-import csv
 
 class App(tk.Tk):
     def __init__(self):
@@ -49,19 +48,22 @@ class App(tk.Tk):
         main_help_text = 'Comma seperated file with 5 columns: Kategorie, Name DE, Name EN, CO2 / 1.6FU (ohne Flug), kg CO2 / kg (ohne Flug).\n\
 The file should have a headerline.'
         [self.mainDBframe,self.mainFile] = self.textFieldWithButton(self,main_text,main_help_text)
+        self.mainFile.insert(INSERT,"C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/Master Db (v3).csv")
         sub_help_text = 'Comma seperated file with 2 columns: Supplier Database Name EN, Main Database Name EN.\n\
 The file must have a headerline.'
         substitue_text = 'Substitutions Database File'
         [self.subDBframe,self.subFile] = self.textFieldWithButton(self,substitue_text,sub_help_text)
+        self.subFile.insert(INSERT,'C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/substitutions.csv')
         supplier_help_text = "Comma seperated file with 5 columns: Supplier, Product Code, Product Name, Case Size, Ingredients.\n\
 The file must have a headerline."
         supplier_text = 'Supplier Database File'
         [self.supplierDBframe, self.supplierFile] = self.textFieldWithButton(self,supplier_text,supplier_help_text)
+        self.supplierFile.insert(INSERT,'C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/Supplier DB.csv')
         default_percentage_help_text="Comma seperated file with 3 columns: E Number, Name EN and Fraction.\n\
 The file must have a headerline."
         default_percent_text = 'Default Percentages File'
         [self.defaultDBframe,self.defaultFile] = self.textFieldWithButton(self,default_percent_text,default_percentage_help_text)
-
+        self.defaultFile.insert(INSERT,'C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/defaultPercentages2.csv')
         launch_text = 'Run'
         self.launch_button = tk.Button(
             self,
@@ -164,7 +166,11 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         matched = [str] * nTotal
         lastPercent = -1
         list_all_missing = list()
+        list_all_matches = list()
         for index, ingredientString in self.supplier_dataframe.Ingredients.items():
+            if index == 2089 or index == 2090 or index == 1901  :
+                print(ingredientString)
+
             prcentCom= numpy.floor(100*index/nTotal)
             self.progress_bar.step(1.0/nTotal)
             self.update()
@@ -193,6 +199,7 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
                 matched[index] = product.matchedIngredients
                 missing[index] = product.missingIngredients
                 list_all_missing.extend(product.missingIngredients)
+                list_all_matches.extend(product.autoIngredients)
                 goodPercentage = ~numpy.isnan(product.percentages)
                 if any(goodPercentage):
                     goodIngredients = list(compress(product.databaseIngredients,goodPercentage))
@@ -237,6 +244,15 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         saveDir = os.path.dirname(os.path.abspath(self.supplierFile.get(0.0,"end-1c")))
         saveName = os.path.join(saveDir,'unqiue_missing_'+date_time+'.csv')
         unique_missing_dataframe.to_csv(saveName,sep=',')
+
+        unique_matches_list = list(set(list_all_matches))
+        count = [ list_all_matches.count(match_name) for match_name in unique_matches_list ]
+        match_count = {'Count':count}
+        unique_matches_dataframe = pd.DataFrame(data=match_count, index = unique_matches_list)
+        unique_matches_dataframe.index.name = 'Match'
+        saveDir = os.path.dirname(os.path.abspath(self.supplierFile.get(0.0,"end-1c")))
+        saveName = os.path.join(saveDir,'unqiue_matched_'+date_time+'.csv')
+        unique_matches_dataframe.to_csv(saveName,sep=',')
 
     @staticmethod
     def select_file(csv_title,cur_dir):

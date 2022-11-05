@@ -8,7 +8,7 @@ class Ingredients:
     supplierName: str = ''
     matchedName: str = ''
     missingName: str = ''
-    
+    autoMatchName: str = ''
     def __init__(self,supplierName: str,\
             mainDB: pandas.DataFrame,\
             userDB: pandas.DataFrame,\
@@ -68,11 +68,13 @@ class Ingredients:
         isLong = len(matchString) > 3 
         isMatch = containtMatch.any()
         goodMatch = isLong and isMatch
+        
         return goodMatch
     
     def getCloseMatch(self,matchString: str,dataBase: pandas.DataFrame,title: str) -> str:
         containtMatch = dataBase[title].str.contains(matchString,regex=False)
         closestMatch = min(dataBase[title][containtMatch].values,key=len)
+        #showwarning('Close match',['Identified close match:'+matchString +' to '+closestMatch])
         return closestMatch
 
     def lookupCO2(self):
@@ -109,7 +111,7 @@ class Ingredients:
 
         if self.isCloseMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.getCloseMatch(self.supplierName,self.mainDB,mainDBTitle)
-      
+            self.autoMatchName = self.mainName
         # it is missing :(
 
 

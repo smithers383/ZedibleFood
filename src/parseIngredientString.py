@@ -94,6 +94,24 @@ def parseIngredientString(string_in):
             #remove comma
             split_string = split_string[:-1]
 
+        if processBracket: #bracket has closed before a comma
+            # try parse the bracket
+            outParse = parseIngredientString(in_bracket_string[1:-1])
+            if checkIsPercentage(in_bracket_string) and len(outParse) < 2:
+                if len(percentStr) > 0:
+                    Warning("Can't parse "+string_in+" accurately")
+                nameAndPercentList = extractPercent(in_bracket_string)
+                percentStr = nameAndPercentList[1]
+            elif not(',' in in_bracket_string): # no items or a percentage probably part of name
+                split_string+=in_bracket_string
+            else:
+                if len(in_bracket_dict) > 0:
+                    Warning("Can't parse "+string_in+" accurately")
+                in_bracket_dict = parseIngredientString(in_bracket_string[1:-1])
+            #reset
+            processBracket = False
+            in_bracket_string = ''
+            
         if processString:
             name = split_string.strip()
             if '%' in split_string:
@@ -113,21 +131,5 @@ def parseIngredientString(string_in):
             processBracket = False
             processString = False
 
-        if processBracket: #bracket has closed before a comma
-            # try parse the bracket
-            outParse = parseIngredientString(in_bracket_string[1:-1])
-            if checkIsPercentage(in_bracket_string) and len(outParse) < 2:
-                if len(percentStr) > 0:
-                    Warning("Can't parse "+string_in+" accurately")
-                nameAndPercentList = extractPercent(in_bracket_string)
-                percentStr = nameAndPercentList[1]
-            elif not(',' in in_bracket_string): # no items or a percentage probably part of name
-                split_string+=in_bracket_string
-            else:
-                if len(in_bracket_dict) > 0:
-                    Warning("Can't parse "+string_in+" accurately")
-                in_bracket_dict = parseIngredientString(in_bracket_string[1:-1])
-            #reset
-            processBracket = False
-            in_bracket_string = ''
+
     return outDict

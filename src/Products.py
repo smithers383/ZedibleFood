@@ -55,6 +55,23 @@ class Products:
             return returnProducts
 
     @property
+    def autoIngredients(self) -> str:
+        product = ['"'+item.supplierName+'","'+item.autoMatchName+'"' for item in self.ingredients if len(self.ingredients) > 0 and len(item.autoMatchName) > 0]
+        
+        if self.anySubIngredients:
+            subProductsLists = [subProduct.autoIngredients for subProduct in self.subProducts if len(subProduct.autoIngredients) > 0 ]
+            subProducts = [product for listProducts in subProductsLists for product in listProducts ]
+            returnProducts = product+subProducts
+        else:
+            returnProducts  = product
+        
+        if len(returnProducts) == 0:
+            return ''
+        else:
+            return returnProducts   
+
+
+    @property
     def databaseIngredients(self) -> str:
 
         product = [item.mainName for item in self.ingredients if len(self.ingredients) > 0 and len(item.mainName) > 0]
@@ -79,7 +96,7 @@ class Products:
         if self.anySubIngredients:
             subProductsLists = [subProduct.calculateIngredients for subProduct in self.subProducts if len(subProduct.calculateIngredients) > 0 ]
             subProducts = [product for listProducts in subProductsLists for product in listProducts ]
-            returnProducts = product+subProducts
+            returnProducts = product+['('+' '.join(map(str, subProducts))+')']
         else:
             returnProducts  = product
         
@@ -115,7 +132,16 @@ class Products:
             if len(supplierPercent) > 0:
                 percentages[i] = self.percentStr2Float(supplierPercent)
             else:
-                percentages[i] = self.getDefaultPercentage(ingredientStr)
+                # try main name
+                percentageVal = self.getDefaultPercentage(self.ingredients[i].mainName)
+                if not numpy.isnan(percentageVal):
+                    percentages[i] = percentageVal
+                    continue
+                # try supplier name
+                percentageVal = self.getDefaultPercentage(self.ingredients[i].supplierName)
+                if not numpy.isnan(percentageVal):
+                    percentages[i] = percentageVal
+                    continue
         return percentages
     
     
