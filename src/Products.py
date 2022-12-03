@@ -12,10 +12,13 @@ class Products:
             ingredientStringDict: dict,\
             mainDB: pandas.DataFrame,\
             userDB: pandas.DataFrame,\
-            defaultPercentages: pandas.DataFrame):
+            defaultPercentages: pandas.DataFrame,\
+            autoProductDB: pandas.DataFrame):
+
         self.ingredientStringDict = ingredientStringDict
         self.mainDB = mainDB
         self.userDB = userDB
+        self.autoProductDB = autoProductDB
         self.defaultPercentages = defaultPercentages
         self.calcPercentages = []
         self.ingredients = self.getIngredients()
@@ -153,7 +156,7 @@ class Products:
         return any([len(self.ingredientStringDict[ingredientStr][1])>0 for ingredientStr in self.ingredientStringDict])
 
     def getSubProducts(self):   
-        return [Products(self.ingredientStringDict[ingredient.supplierName][1],self.mainDB,self.userDB,self.defaultPercentages)\
+        return [Products(self.ingredientStringDict[ingredient.supplierName][1],self.mainDB,self.userDB,self.defaultPercentages,self.autoProductDB)\
              for ingredient in self.ingredients]
 
     @property
@@ -169,10 +172,39 @@ class Products:
     
     @property
     def totalCO2(self) -> float:
+        # auto sub calculations
+        supplierIngredientSet = set([subIngredient.supplierName for subIngredient in self.ingredients])
+        mainIngredientSet = set([subIngredient.mainName for subIngredient in self.ingredients])
+        
+        #isCheese or other auto sub loop
+        for line, subCO2 in zip(self.autoProductDB['Ingredients'],self.autoProductDB['CO2']):
+            replaceStrList = str.split(line,',')
+            isReplace = all([replaceStr in supplierIngredientSet or \
+                replaceStr in mainIngredientSet for replaceStr in replaceStrList])
+            if isReplace:
+                self.calcPercentages = [1.0]
+                self.ingredients = [Ingredients('Cheese, firm, Danbo, 45 % fidm.',self.mainDB,self.userDB,self.defaultPercentages)]
+                self.subProducts = [] # no longer use sub products
+                self.ingredientStringDict = dict()
+                print(subCO2)
+                print(supplierIngredientSet)
+                return subCO2
+        
+        #cheeseStringList = {'milk','rennet','salt'}
+        #isCheese = all([cheeseString in supplierIngredientSet or \
+        #    cheeseString in mainIngredientSet for cheeseString in cheeseStringList])
+        #cheeseCO2 = 0.0772
+        #if isCheese: # replace with a cheese.
+        #    self.calcPercentages = [1.0]
+        #    self.ingredients = [Ingredients('Cheese, firm, Danbo, 45 % fidm.',self.mainDB,self.userDB,self.defaultPercentages)]
+        #    self.subProducts = [] # no longer use sub products
+        #    self.ingredientStringDict = dict()
+        #    return cheeseCO2
         calcPercentages = numpy.zeros(len(self.CO2))
         if len(self.CO2) == 0: # no data
             self.calcPercentages = calcPercentages
             return numpy.nan
+
         isGoodCO2 = ~numpy.isnan(self.CO2)
         validPercentages = list(compress(self.percentages,isGoodCO2))
         goodCO2 = list(compress(self.CO2,isGoodCO2))

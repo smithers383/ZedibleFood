@@ -59,22 +59,30 @@ The file must have a headerline."
         supplier_text = 'Supplier Database File'
         [self.supplierDBframe, self.supplierFile] = self.textFieldWithButton(self,supplier_text,supplier_help_text)
         self.supplierFile.insert(INSERT,'C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/Supplier DB.csv')
+        
         default_percentage_help_text="Comma seperated file with 3 columns: E Number, Name EN and Fraction.\n\
 The file must have a headerline."
         default_percent_text = 'Default Percentages File'
         [self.defaultDBframe,self.defaultFile] = self.textFieldWithButton(self,default_percent_text,default_percentage_help_text)
         self.defaultFile.insert(INSERT,'C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/defaultPercentages2.csv')
+        
+        auto_sub_products = 'Automatic Sub-ingredient file'
+        auto_product_help_text = "Comma seperated file with 2 columns: List of ingredients to replace, Main DB name.\n\
+The file must have a headerline."
+        [self.autoProductDBframe,self.autoProductFile] = self.textFieldWithButton(self,auto_sub_products,auto_product_help_text)
+        self.autoProductFile.insert(INSERT,'C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/autoIngredientReplacements.csv')
         launch_text = 'Run'
         self.launch_button = tk.Button(
             self,
             text=launch_text,
             command= self.go
         )
-
+        
         self.mainDBframe.pack(expand=False,side= TOP, padx=5, pady=5,fill="x")
         self.subDBframe.pack(expand=False,side = TOP, padx=5, pady=5,fill="x")
         self.defaultDBframe.pack(expand=False,side = TOP, padx=5, pady=5,fill="x")
-        self.supplierDBframe.pack(expand=False,side = TOP, padx=5, pady=5,fill="x")       
+        self.supplierDBframe.pack(expand=False,side = TOP, padx=5, pady=5,fill="x")      
+        self.autoProductDBframe.pack(expand=False,side = TOP, padx=5, pady=5,fill="x")       
 
         runLabel = Label(self,text='Output is saved into the same directory as the supplier database.\n\
 Generated files are:\n\
@@ -98,6 +106,18 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         subFileStr = self.subFile.get(0.0,"end-1c")
         defaultFileStr = self.defaultFile.get(0.0,"end-1c")
         supplierFileStr = self.supplierFile.get(0.0,"end-1c")
+        autoProductFileStr = self.autoProductFile.get(0.0,"end-1c")
+        
+        try:
+            self.autoProduct_dataframe = pd.read_csv(autoProductFileStr,
+                delimiter=',',
+                header=0,
+                usecols=[0,1],
+                names=['Ingredients','CO2'])
+        except:
+            showwarning(title=None, message="Failed to ingredient list replacement database")
+            self.progress_bar.stop()   
+
         try:
             self.supplier_dataframe = pd.read_csv(supplierFileStr,
                 delimiter=',',
@@ -142,6 +162,7 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         self.master_dataframe = self.master_dataframe.apply(lambda x: self.lowerCase(x))  
         self.default_percentagaes_dataframe = self.default_percentagaes_dataframe.apply(lambda x: self.lowerCase(x)) 
         self.sub_dataframe = self.sub_dataframe.apply(lambda x: self.lowerCase(x)) 
+        self.autoProduct_dataframe = self.autoProduct_dataframe.apply(lambda x: self.lowerCase(x)) 
 
     @staticmethod
     def lowerCase(inputVar):
@@ -186,7 +207,7 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
                         Failed to parse ingredient string: "+ ingredientString  
                     showwarning(title=None, message=returnMessage)
                 try:
-                    product = Products(parsedIngredientString,self.master_dataframe,self.sub_dataframe,self.default_percentagaes_dataframe)
+                    product = Products(parsedIngredientString,self.master_dataframe,self.sub_dataframe,self.default_percentagaes_dataframe,self.autoProduct_dataframe)
                     CO2perKG[index] = product.totalCO2
                 except:
                     returnMessage = "Supplier:"+self.supplier_dataframe['Supplier'][index]+"\n\
