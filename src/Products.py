@@ -177,14 +177,15 @@ class Products:
         mainIngredientSet = set([subIngredient.mainName for subIngredient in self.ingredients])
         
         #isCheese or other auto sub loop
-        for line, subCO2 in zip(self.autoProductDB['Ingredients'],self.autoProductDB['CO2']):
-            replaceStrList = str.split(line,',')
+        for line, subCO2, subName in zip(self.autoProductDB['Ingredients'],self.autoProductDB['CO2'],self.autoProductDB['Name']):
+            replaceStrList = str.split(line,';')
             isReplace = all([replaceStr in supplierIngredientSet or \
                 replaceStr in mainIngredientSet for replaceStr in replaceStrList])
             if isReplace:
                 self.calcPercentages = [1.0]
-                self.ingredients = [Ingredients('Cheese, firm, Danbo, 45 % fidm.',self.mainDB,self.userDB,self.defaultPercentages)]
+                self.ingredients = [Ingredients(subName,self.mainDB,self.userDB,self.defaultPercentages)]
                 self.subProducts = [] # no longer use sub products
+
                 self.ingredientStringDict = dict()
                 print(subCO2)
                 print(supplierIngredientSet)

@@ -67,8 +67,8 @@ The file must have a headerline."
         self.defaultFile.insert(INSERT,'C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/defaultPercentages2.csv')
         
         auto_sub_products = 'Automatic Sub-ingredient file'
-        auto_product_help_text = "Comma seperated file with 2 columns: List of ingredients to replace, Main DB name.\n\
-The file must have a headerline."
+        auto_product_help_text = "Comma seperated file with 3 columns: List of ingredients to replace,CO2 to use and Main DB name.\n\
+The file must have a headerline. The list of ingredients needs to be semicolon (;) seperated"
         [self.autoProductDBframe,self.autoProductFile] = self.textFieldWithButton(self,auto_sub_products,auto_product_help_text)
         self.autoProductFile.insert(INSERT,'C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/autoIngredientReplacements.csv')
         launch_text = 'Run'
@@ -112,8 +112,8 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
             self.autoProduct_dataframe = pd.read_csv(autoProductFileStr,
                 delimiter=',',
                 header=0,
-                usecols=[0,1],
-                names=['Ingredients','CO2'])
+                usecols=[0,1,2],
+                names=['Ingredients','CO2','Name'])
         except:
             showwarning(title=None, message="Failed to ingredient list replacement database")
             self.progress_bar.stop()   
