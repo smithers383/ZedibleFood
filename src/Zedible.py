@@ -18,7 +18,7 @@ class App(tk.Tk):
         super().__init__()
         self.title('Zedible')
         
-        #self['background']='#9bc2ac'
+        self['background']='#9bc2ac'
         self.resizable(True,False)
         self.addButons()
         self.minsize(800, 500)
@@ -48,29 +48,29 @@ class App(tk.Tk):
         main_help_text = 'Comma seperated file with 5 columns: Kategorie, Name DE, Name EN, CO2 / 1.6FU (ohne Flug), kg CO2 / kg (ohne Flug).\n\
 The file should have a headerline.'
         [self.mainDBframe,self.mainFile] = self.textFieldWithButton(self,main_text,main_help_text)
-        self.mainFile.insert(INSERT,"C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/Master Db (v3).csv")
+        self.mainFile.insert(INSERT,"/Users/griffholland/Desktop/inputs/Master Db (v3).csv")
         sub_help_text = 'Comma seperated file with 2 columns: Supplier Database Name EN, Main Database Name EN.\n\
 The file must have a headerline.'
         substitue_text = 'Substitutions Database File'
         [self.subDBframe,self.subFile] = self.textFieldWithButton(self,substitue_text,sub_help_text)
-        self.subFile.insert(INSERT,'C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/substitutions.csv')
+        self.subFile.insert(INSERT,'/Users/griffholland/Desktop/inputs/substitutions.csv')
         supplier_help_text = "Comma seperated file with 5 columns: Supplier, Product Code, Product Name, Case Size, Ingredients.\n\
 The file must have a headerline."
         supplier_text = 'Supplier Database File'
         [self.supplierDBframe, self.supplierFile] = self.textFieldWithButton(self,supplier_text,supplier_help_text)
-        self.supplierFile.insert(INSERT,'C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/Supplier DB.csv')
+        self.supplierFile.insert(INSERT,'/Users/griffholland/Desktop/inputs/Supplier DB.csv')
         
         default_percentage_help_text="Comma seperated file with 3 columns: E Number, Name EN and Fraction.\n\
 The file must have a headerline."
         default_percent_text = 'Default Percentages File'
         [self.defaultDBframe,self.defaultFile] = self.textFieldWithButton(self,default_percent_text,default_percentage_help_text)
-        self.defaultFile.insert(INSERT,'C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/defaultPercentages2.csv')
+        self.defaultFile.insert(INSERT,'/Users/griffholland/Desktop/inputs/defaultPercentages2.csv')
         
         auto_sub_products = 'Automatic Sub-ingredient file'
         auto_product_help_text = "Comma seperated file with 3 columns: List of ingredients to replace,CO2 to use and Main DB name.\n\
 The file must have a headerline. The list of ingredients needs to be semicolon (;) seperated"
         [self.autoProductDBframe,self.autoProductFile] = self.textFieldWithButton(self,auto_sub_products,auto_product_help_text)
-        self.autoProductFile.insert(INSERT,'C:/Users/henry/Documents/HJS_Dev/Zedible/Zedible/inputs/autoIngredientReplacements.csv')
+        self.autoProductFile.insert(INSERT,'/Users/griffholland/Desktop/inputs/autoIngredientReplacements.csv')
         launch_text = 'Run'
         self.launch_button = tk.Button(
             self,
