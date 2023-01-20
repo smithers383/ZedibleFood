@@ -48,29 +48,29 @@ class App(tk.Tk):
         main_help_text = 'Comma seperated file with 5 columns: Kategorie, Name DE, Name EN, CO2 / 1.6FU (ohne Flug), kg CO2 / kg (ohne Flug).\n\
 The file should have a headerline.'
         [self.mainDBframe,self.mainFile] = self.textFieldWithButton(self,main_text,main_help_text)
-        self.mainFile.insert(INSERT,"/Users/griffholland/Desktop/inputs/Master Db (v3).csv")
+        self.mainFile.insert(INSERT,"C:/Projects/Zedible/ZedibleFood/inputs/Master Db (v3).csv")
         sub_help_text = 'Comma seperated file with 2 columns: Supplier Database Name EN, Main Database Name EN.\n\
 The file must have a headerline.'
         substitue_text = 'Substitutions Database File'
         [self.subDBframe,self.subFile] = self.textFieldWithButton(self,substitue_text,sub_help_text)
-        self.subFile.insert(INSERT,'/Users/griffholland/Desktop/inputs/substitutions.csv')
+        self.subFile.insert(INSERT,'C:/Projects/Zedible/ZedibleFood/inputs/substitutions.csv')
         supplier_help_text = "Comma seperated file with 5 columns: Supplier, Product Code, Product Name, Case Size, Ingredients.\n\
 The file must have a headerline."
         supplier_text = 'Supplier Database File'
         [self.supplierDBframe, self.supplierFile] = self.textFieldWithButton(self,supplier_text,supplier_help_text)
-        self.supplierFile.insert(INSERT,'/Users/griffholland/Desktop/inputs/Supplier DB.csv')
+        self.supplierFile.insert(INSERT,'C:/Projects/Zedible/ZedibleFood/inputs/Supplier DB.csv')
         
         default_percentage_help_text="Comma seperated file with 3 columns: E Number, Name EN and Fraction.\n\
 The file must have a headerline."
         default_percent_text = 'Default Percentages File'
         [self.defaultDBframe,self.defaultFile] = self.textFieldWithButton(self,default_percent_text,default_percentage_help_text)
-        self.defaultFile.insert(INSERT,'/Users/griffholland/Desktop/inputs/defaultPercentages2.csv')
+        self.defaultFile.insert(INSERT,'C:/Projects/Zedible/ZedibleFood/inputs/defaultPercentages2.csv')
         
         auto_sub_products = 'Automatic Sub-ingredient file'
         auto_product_help_text = "Comma seperated file with 3 columns: List of ingredients to replace,CO2 to use and Main DB name.\n\
 The file must have a headerline. The list of ingredients needs to be semicolon (;) seperated"
         [self.autoProductDBframe,self.autoProductFile] = self.textFieldWithButton(self,auto_sub_products,auto_product_help_text)
-        self.autoProductFile.insert(INSERT,'/Users/griffholland/Desktop/inputs/autoIngredientReplacements.csv')
+        self.autoProductFile.insert(INSERT,'C:/Projects/Zedible/ZedibleFood/inputs/autoIngredientReplacements.csv')
         launch_text = 'Run'
         self.launch_button = tk.Button(
             self,
@@ -113,7 +113,8 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
                 delimiter=',',
                 header=0,
                 usecols=[0,1,2],
-                names=['Ingredients','CO2','Name'])
+                names=['Ingredients','CO2','Name'],
+                encoding='latin-1')
         except:
             showwarning(title=None, message="Failed to ingredient list replacement database")
             self.progress_bar.stop()   
@@ -123,7 +124,8 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
                 delimiter=',',
                 header=0,
                 usecols=[0,1,2,3,4],
-                names=['Supplier','Product Code','Product Name','Case Size','Ingredients'])
+                names=['Supplier','Product Code','Product Name','Case Size','Ingredients'],
+                encoding='latin-1')
         except:
             showwarning(title=None, message="Failed to load supplier database")
             self.progress_bar.stop()   
@@ -133,7 +135,8 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
                 delimiter=',',
                 header=0,
                 usecols=[0,1,2,4],
-                names=['Categorie','Name DE','Name EN','kg CO2 / kg (ohne Flug)'])
+                names=['Categorie','Name DE','Name EN','kg CO2 / kg (ohne Flug)'],
+                encoding='latin-1')
         except:
             showwarning(title=None, message="Failed to load main database")
             self.progress_bar.stop()               
@@ -143,7 +146,8 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
                 delimiter=',',
                 header=0,
                 usecols=[0,1],
-                names=['SupplierDB','MainDB'])
+                names=['SupplierDB','MainDB'],
+                encoding='latin-1')
         except:
             showwarning(title=None, message="Failed to load substitutions database")
             self.progress_bar.stop()    
@@ -153,7 +157,8 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
                 delimiter=',',
                 header=0,
                 usecols=[0,1,2],
-                names=['E_Number','Item','Fraction'])
+                names=['E_Number','Item','Fraction'],
+                encoding='latin-1')
         except:
             showwarning(title=None, message="Failed to load default percentages database")
             self.progress_bar.stop()  

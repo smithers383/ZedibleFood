@@ -92,7 +92,11 @@ class Products:
 
     @property
     def calculateIngredients(self) -> str:
-        productName = [item.mainName for item in self.ingredients if len(self.ingredients) > 0 and len(item.supplierName) > 0]
+        if len(self.ingredients) > 0:
+            productName = [item.mainName if  len(item.supplierName) > 0 and len(item.mainName) > 0  else item.missingName for item in self.ingredients ]
+        else:
+            productName = []    
+
         calcPercentages = self.calcPercentages
         product = [product+" {:0.2f}%".format(calcPercentages[i]*100) for i, product in enumerate(productName)]
 
@@ -253,7 +257,10 @@ class Products:
         elif len(string_in) > 3 and string_in[0:3] == 'min':
             returnPercent = float(string_in[4:])/100 # strange min format
         else:
-            returnPercent = float(string_in)/100
+            try:
+                returnPercent = float(string_in)/100
+            except:
+                returnPercent = numpy.nan
         return returnPercent
 
     
