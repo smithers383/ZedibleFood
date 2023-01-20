@@ -18,7 +18,7 @@ class App(tk.Tk):
         super().__init__()
         self.title('Zedible')
         
-#        self['background']='#9bc2ac'
+        self['background']='#9bc2ac'
         self.resizable(True,False)
         self.addButons()
         self.minsize(800, 500)
