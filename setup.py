@@ -10,7 +10,7 @@ from setuptools import setup
 APP = ['src/Zedible.py']
 DATA_FILES = ['Zedible_Branding_STG05_Brandmark.ico']
 OPTIONS = {
-	'packages': ['pandas','numpy','datetime','parseIngredientString','Products','os'],
+	'packages': ['libffi','pandas','numpy','datetime','parseIngredientString','Products','os'],
 	'includes':['pandas','numpy','datetime','parseIngredientString','Products','os'],
 	'argv_emulation':False	
 }
@@ -19,6 +19,5 @@ setup(
     app=APP,
     name='Zedible',
     data_files=DATA_FILES,
-    options={'py2app': OPTIONS},
     setup_requires=['py2app'],
 )

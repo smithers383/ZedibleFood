@@ -53,7 +53,7 @@ def category_models_fn(category_counts):
     category_models = {}
     for category, ingredient_count in category_counts.items():
         tmp = sorted(ingredient_count.items(), key=lambda x: x[1], reverse=True)[:top_X]
-        print('Category: {}\n{}\n'.format(category,tmp))
+        #print('Category: {}\n{}\n'.format(category,tmp))
         for ingredient,ingredient_count in tmp:
             if ingredient not in category_models:
                 # Initialize dict if ingredient is detected for the first time
@@ -121,29 +121,29 @@ class App(tk.Tk):
         main_help_text = 'Comma seperated file with 5 columns: Kategorie, Name DE, Name EN, CO2 / 1.6FU (ohne Flug), kg CO2 / kg (ohne Flug).\n\
 The file should have a headerline.'
         [self.mainDBframe,self.mainFile] = self.textFieldWithButton(self,main_text,main_help_text)
-        self.mainFile.insert(INSERT,"C:/Projects/Zedible/ZedibleFood/inputs/Master Db (v3).csv")
+        self.mainFile.insert(INSERT,"/Users/edbrown/Desktop/Zedible Algo/inputs/Master Db (v3).csv")
         sub_help_text = 'Comma seperated file with 2 columns: Supplier Database Name EN, Main Database Name EN.\n\
 The file must have a headerline.'
         substitue_text = 'Substitutions Database File'
         [self.subDBframe,self.subFile] = self.textFieldWithButton(self,substitue_text,sub_help_text)
-        self.subFile.insert(INSERT,'C:/Projects/Zedible/ZedibleFood/inputs/substitutions.csv')
+        self.subFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/substitutions.csv')
         supplier_help_text = "Comma seperated file with 5 columns: Supplier, Product Code, Product Name, Case Size, Ingredients.\n\
 The file must have a headerline."
         supplier_text = 'Supplier Database File'
         [self.supplierDBframe, self.supplierFile] = self.textFieldWithButton(self,supplier_text,supplier_help_text)
-        self.supplierFile.insert(INSERT,'C:/Projects/Zedible/ZedibleFood/inputs/Supplier DB.csv')
+        self.supplierFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/Supplier DB.csv')
         
         default_percentage_help_text="Comma seperated file with 3 columns: E Number, Name EN and Fraction.\n\
 The file must have a headerline."
         default_percent_text = 'Default Percentages File'
         [self.defaultDBframe,self.defaultFile] = self.textFieldWithButton(self,default_percent_text,default_percentage_help_text)
-        self.defaultFile.insert(INSERT,'C:/Projects/Zedible/ZedibleFood/inputs/defaultPercentages2.csv')
+        self.defaultFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/defaultPercentages2.csv')
         
         auto_sub_products = 'Automatic Sub-ingredient file'
         auto_product_help_text = "Comma seperated file with 3 columns: List of ingredients to replace,CO2 to use and Main DB name.\n\
 The file must have a headerline. The list of ingredients needs to be semicolon (;) seperated"
         [self.autoProductDBframe,self.autoProductFile] = self.textFieldWithButton(self,auto_sub_products,auto_product_help_text)
-        self.autoProductFile.insert(INSERT,'C:/Projects/Zedible/ZedibleFood/inputs/autoIngredientReplacements.csv')
+        self.autoProductFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/autoIngredientReplacements.csv')
         launch_text = 'Run'
         self.launch_button = tk.Button(
             self,
@@ -155,7 +155,7 @@ The file must have a headerline. The list of ingredients needs to be semicolon (
         auto_category_help_text = "Comma seperated file with 6 columns: Supplier, Product Code, Product Name, Case Size, Ingredients and Category.\n\
 The file must have a headerline."
         [self.autoCategoryDBframe,self.autoCategoryFile] = self.textFieldWithButton(self,auto_category,auto_category_help_text)
-        self.autoCategoryFile.insert(INSERT,'C:/Projects/Zedible/ZedibleFood/inputs/Harvey & Brockless Supplier data (Anna Fe).xlsx')
+        self.autoCategoryFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/Harvey & Brockless Supplier data (Anna Fe).xlsx')
         launch_text = 'Run'
         self.launch_button = tk.Button(
             self,
@@ -224,11 +224,11 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
             showwarning(title=None, message="Failed to load default percentages database")
             self.progress_bar.stop()  
 
-        try:
-            self.autoCategory_dataframe = read_file(autoCategoryFileStr,0,[0,1,2,3,4,5,6],['Supplier','Product Code','Product Name','Ingredients','CalcIngredients','CO2perKg','Category'])
-        except:
-            showwarning(title=None, message="Failed to load autocategory database")
-            self.progress_bar.stop()  
+        #try:
+        self.autoCategory_dataframe = read_file(autoCategoryFileStr,0,[0,1,2,3,4,5,6],['Supplier','Product Code','Product Name','Ingredients','CalcIngredients','CO2perKg','Category'])
+        #except:
+        #    showwarning(title=None, message="Failed to load autocategory database")
+        #    self.progress_bar.stop()  
 
         self.supplier_dataframe = self.supplier_dataframe.apply(lambda x: self.lowerCase(x)) 
         self.master_dataframe = self.master_dataframe.apply(lambda x: self.lowerCase(x))  
@@ -261,7 +261,6 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
 
 
     def go(self):
-        self.progress_bar.start()
         try:
             self.loadFiles()
         except:

@@ -3,7 +3,7 @@ import numpy as np
 import pandas
 from Levenshtein import ratio
 
-THRESHOLD = 0.8
+THRESHOLD = 0.6
 DEBUG=True
 
 class Ingredients:
