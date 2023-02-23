@@ -13,6 +13,74 @@ from tkinter.messagebox import showwarning
 import os
 from itertools import compress
 
+def read_file(file_str,header_skip,col_numbers,col_names):
+    try:
+        return_db = pd.read_excel(file_str,
+                header=header_skip,
+                usecols=col_numbers,
+                names=col_names)
+    except:
+        return_db = pd.read_csv(file_str,
+                delimiter=',',
+                header=header_skip,
+                usecols=col_numbers,
+                names=col_names,
+                encoding='latin-1')
+    return return_db
+
+def clean_ingredients(ingredientString):
+    parsedIngredientString = ''
+    if isinstance(ingredientString, str):
+        try:
+            parsedIngredientString = parseIngredientString(ingredientString)
+        except:
+            returnMessage = "Failed to parse ingredient string: "+ ingredientString  
+            showwarning(title=None, message=returnMessage)
+    elif isinstance(ingredientString, list):
+        try:
+            parsedIngredientString = [clean_ingredients(ingredient_str_sub) for ingredient_str_sub in ingredientString]        
+        except:
+            returnMessage = "Failed to parse ingredient string: "+ ingredientString  
+            showwarning(title=None, message=returnMessage)
+    return parsedIngredientString
+
+
+
+def category_models_fn(category_counts):
+    top_X = 20
+    category_models = {}
+    for category, ingredient_count in category_counts.items():
+        tmp = sorted(ingredient_count.items(), key=lambda x: x[1], reverse=True)[:top_X]
+        print('Category: {}\n{}\n'.format(category,tmp))
+        for ingredient,ingredient_count in tmp:
+            if ingredient not in category_models:
+                # Initialize dict if ingredient is detected for the first time
+                category_models[ingredient] = {}
+                # Keep track of how many times each ingredient is mapped to a category
+                if category not in category_models[ingredient]:
+                    category_models[ingredient][category] = ingredient_count
+            else:
+                if category not in category_models[ingredient]:
+                    category_models[ingredient][category] = ingredient_count
+    return category_models
+
+def predict_category(list_of_ingredients,category_models, top_X):
+    list_of_sorted_categories = []
+    category_score =  {}
+    for ingredient in list_of_ingredients:
+        # Ensure the ingredient is available in the model storage
+        if ingredient in category_models:
+            ingredient_categories = category_models[ingredient]
+            for category, score in ingredient_categories.items():
+                if category not in category_score:
+                    category_score[category] = 0
+                print('Ingredient: {}, category: {}, score: {}'.
+                      format(ingredient, category, score))
+                category_score[category] += score
+    list_of_sorted_categories = sorted(category_score.items(), key=lambda x: x[1], reverse=True)
+    return list_of_sorted_categories[:top_X]
+
+
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -77,12 +145,25 @@ The file must have a headerline. The list of ingredients needs to be semicolon (
             text=launch_text,
             command= self.go
         )
+
+        auto_category = 'Reference Supplier Product to Cateogry Matching File'
+        auto_category_help_text = "Comma seperated file with 6 columns: Supplier, Product Code, Product Name, Case Size, Ingredients and Category.\n\
+The file must have a headerline."
+        [self.autoCategoryDBframe,self.autoCategoryFile] = self.textFieldWithButton(self,auto_category,auto_category_help_text)
+        self.autoCategoryFile.insert(INSERT,'C:/Projects/Zedible/ZedibleFood/inputs/Harvey & Brockless Supplier data (Anna Fe).xlsx')
+        launch_text = 'Run'
+        self.launch_button = tk.Button(
+            self,
+            text=launch_text,
+            command= self.go
+        )
         
         self.mainDBframe.pack(expand=False,side= TOP, padx=5, pady=5,fill="x")
         self.subDBframe.pack(expand=False,side = TOP, padx=5, pady=5,fill="x")
         self.defaultDBframe.pack(expand=False,side = TOP, padx=5, pady=5,fill="x")
         self.supplierDBframe.pack(expand=False,side = TOP, padx=5, pady=5,fill="x")      
         self.autoProductDBframe.pack(expand=False,side = TOP, padx=5, pady=5,fill="x")       
+        self.autoCategoryDBframe.pack(expand=False,side = TOP, padx=5, pady=5,fill="x")      
 
         runLabel = Label(self,text='Output is saved into the same directory as the supplier database.\n\
 Generated files are:\n\
@@ -107,67 +188,67 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         defaultFileStr = self.defaultFile.get(0.0,"end-1c")
         supplierFileStr = self.supplierFile.get(0.0,"end-1c")
         autoProductFileStr = self.autoProductFile.get(0.0,"end-1c")
-        
+        autoCategoryFileStr = self.autoCategoryFile.get(0.0,"end-1c")
         try:
-            self.autoProduct_dataframe = pd.read_csv(autoProductFileStr,
-                delimiter=',',
-                header=0,
-                usecols=[0,1,2],
-                names=['Ingredients','CO2','Name'],
-                encoding='latin-1')
+            self.autoProduct_dataframe = read_file(autoProductFileStr,0,[0,1,2],['Ingredients','CO2','Name'])
         except:
             showwarning(title=None, message="Failed to ingredient list replacement database")
             self.progress_bar.stop()   
 
         try:
-            self.supplier_dataframe = pd.read_csv(supplierFileStr,
-                delimiter=',',
-                header=0,
-                usecols=[0,1,2,3,4],
-                names=['Supplier','Product Code','Product Name','Case Size','Ingredients'],
-                encoding='latin-1')
+            self.supplier_dataframe = read_file(supplierFileStr,0,[0,1,2,3,4],['Supplier','Product Code','Product Name','Case Size','Ingredients'])
         except:
             showwarning(title=None, message="Failed to load supplier database")
             self.progress_bar.stop()   
         
         try:     
-            self.master_dataframe = pd.read_csv(mainFileStr,
-                delimiter=',',
-                header=0,
-                usecols=[0,1,2,4],
-                names=['Categorie','Name DE','Name EN','kg CO2 / kg (ohne Flug)'],
-                encoding='latin-1')
+            self.master_dataframe = read_file(mainFileStr,0,[0,1,2,4],['Categorie','Name DE','Name EN','kg CO2 / kg (ohne Flug)'])
         except:
             showwarning(title=None, message="Failed to load main database")
             self.progress_bar.stop()               
         
         try:        
-            self.sub_dataframe = pd.read_csv(subFileStr,
-                delimiter=',',
-                header=0,
-                usecols=[0,1],
-                names=['SupplierDB','MainDB'],
-                encoding='latin-1')
+            self.userDB = read_file(subFileStr,0,[0,1],['SupplierDB','MainDB'])
         except:
             showwarning(title=None, message="Failed to load substitutions database")
             self.progress_bar.stop()    
         
         try:
-            self.default_percentagaes_dataframe = pd.read_csv(defaultFileStr,
-                delimiter=',',
-                header=0,
-                usecols=[0,1,2],
-                names=['E_Number','Item','Fraction'],
-                encoding='latin-1')
+            self.default_percentagaes_dataframe = read_file(defaultFileStr,0,[0,1,2],['E_Number','Item','Fraction'])
         except:
             showwarning(title=None, message="Failed to load default percentages database")
+            self.progress_bar.stop()  
+
+        try:
+            self.autoCategory_dataframe = read_file(autoCategoryFileStr,0,[0,1,2,3,4,5,6],['Supplier','Product Code','Product Name','Ingredients','CalcIngredients','CO2perKg','Category'])
+        except:
+            showwarning(title=None, message="Failed to load autocategory database")
             self.progress_bar.stop()  
 
         self.supplier_dataframe = self.supplier_dataframe.apply(lambda x: self.lowerCase(x)) 
         self.master_dataframe = self.master_dataframe.apply(lambda x: self.lowerCase(x))  
         self.default_percentagaes_dataframe = self.default_percentagaes_dataframe.apply(lambda x: self.lowerCase(x)) 
-        self.sub_dataframe = self.sub_dataframe.apply(lambda x: self.lowerCase(x)) 
+        self.userDB = self.userDB.apply(lambda x: self.lowerCase(x)) 
         self.autoProduct_dataframe = self.autoProduct_dataframe.apply(lambda x: self.lowerCase(x)) 
+        self.autoCategory_dataframe = self.autoCategory_dataframe.apply(lambda x: self.lowerCase(x)) 
+
+    def process_ingredients(self,parsedIngredientDict):
+        product = Products(parsedIngredientDict,self.master_dataframe,self.userDB,self.default_percentagaes_dataframe,self.autoProduct_dataframe)  
+        return product
+
+    # This function takes each group and then calculates the word frequency for the ingredients
+    # and stores it in the category_counts dict
+    def category_counts_fn(self,x):
+        self.category_counts[x.name] = {}
+        print('Category: {}, category size: {}'.format(x.name, len(x.name)))
+        for row in x:
+            for ingredient in row:
+                print('Row:',row)
+                for ingredient in row:
+                    if ingredient not in self.category_counts[x.name]:
+                        self.category_counts[x.name][ingredient] = 1
+                    else:
+                        self.category_counts[x.name][ingredient] += 1 # Increase count for this ingredient
 
     @staticmethod
     def lowerCase(inputVar):
@@ -186,6 +267,7 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
 
         nTotal = len(self.supplier_dataframe.Ingredients)
         CO2perKG = [float] * nTotal
+        category = [str] * nTotal
         missing = [str] * nTotal
         main = [str] * nTotal
         calculate = [str] * nTotal
@@ -193,60 +275,69 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         lastPercent = -1
         list_all_missing = list()
         list_all_matches = list()
-        for index, ingredientString in self.supplier_dataframe.Ingredients.items():
-            if index == 2089 or index == 2090 or index == 1901  :
-                print(ingredientString)
 
-            prcentCom= numpy.floor(100*index/nTotal)
-            self.progress_bar.step(1.0/nTotal)
-            self.update()
-            if (prcentCom) % 5 == 0 and prcentCom != lastPercent:
-                print("{:.0f}%".format(prcentCom))
-                lastPercent = prcentCom
-            if isinstance(ingredientString, str):
-                try:
-                    parsedIngredientString = parseIngredientString(ingredientString)
-                except:
-                    returnMessage = "Supplier:"+self.supplier_dataframe['Supplier'][index]+"\n\
-                        Product Code:"+self.supplier_dataframe['Product Code'][index]+"\n\
-                        Failed to parse ingredient string: "+ ingredientString  
-                    showwarning(title=None, message=returnMessage)
-                try:
-                    product = Products(parsedIngredientString,self.master_dataframe,self.sub_dataframe,self.default_percentagaes_dataframe,self.autoProduct_dataframe)
-                    CO2perKG[index] = product.totalCO2
-                except:
-                    returnMessage = "Supplier:"+self.supplier_dataframe['Supplier'][index]+"\n\
-                        Product Code:"+self.supplier_dataframe['Product Code'][index]+"\n\
-                        Failed to calculate CO2"  
-                    showwarning(title=None, message=returnMessage)
-                    return
-                main[index] = product.databaseIngredients
-                calculate[index] = product.calculateIngredients
-                matched[index] = product.matchedIngredients
-                missing[index] = product.missingIngredients
-                list_all_missing.extend(product.missingIngredients)
-                list_all_matches.extend(product.autoIngredients)
-                goodPercentage = ~numpy.isnan(product.percentages)
-                if any(goodPercentage):
-                    goodIngredients = list(compress(product.databaseIngredients,goodPercentage))
-                    goodPercentageValues = [[val] for val in list(compress(product.percentages,goodPercentage))]
-                    updateDictVals = dict(zip(goodIngredients,goodPercentageValues))
-                    for key in updateDictVals:
-                        if key in self.percentageHistoryDict.keys():
-                            self.percentageHistoryDict[key] = self.percentageHistoryDict[key]+ updateDictVals[key]
-                        else: 
-                            self.percentageHistoryDict[key] = updateDictVals[key]
-            else:
-                missing[index]=''
-                calculate[index] = ''
-        print("date and time:",date_time)
-        self.supplier_dataframe['missingName'] = missing
-        self.supplier_dataframe['Calculation'] = calculate
-        self.supplier_dataframe['co2perkg'] = CO2perKG
+        
+        # parse the ingredients
+        self.supplier_dataframe['Ingredients_cleaned'] = self.supplier_dataframe['Ingredients'].map(lambda x: clean_ingredients(x))
+        self.autoCategory_dataframe['Ingredients_cleaned'] = self.autoCategory_dataframe['Ingredients'].map(lambda x: clean_ingredients(x))
+
+        # convert the ingredients into Master DB ingredients
+        self.supplier_dataframe['Products'] = self.supplier_dataframe['Ingredients_cleaned'].map(lambda x: self.process_ingredients(x))
+        self.autoCategory_dataframe['Products'] = self.autoCategory_dataframe['Ingredients_cleaned'].map(lambda x: self.process_ingredients(x))
+        
+        # extract main db ingredients
+        self.supplier_dataframe['MasterDB_Ingredients'] = self.supplier_dataframe['Products'].map(lambda x: x.databaseIngredients) 
+        self.autoCategory_dataframe['MasterDB_Ingredients'] = self.autoCategory_dataframe['Products'].map(lambda x: x.databaseIngredients)
+
+        self.category_counts = {}
+        #tmp = self.autoCategory_dataframe.groupby('MasterDB_Categories')['MasterDB_Ingredients'].apply(category_counts_fn)
+        #for this_category in category_names:
+        #    category_counts[this_category] = category_counts_fn(self.autoCategory_dataframe,this_category)
+        self.autoCategory_dataframe.groupby('Category')['MasterDB_Ingredients'].apply(self.category_counts_fn)
+        #tmp = self.supplier_dataframe.groupby('Category')['Ingredients_normalized'].apply(lambda x: category_counts_fn(x,category_names))
+        
+        category_models = category_models_fn(self.category_counts)
+        top_X = 5
+        self.supplier_dataframe['Category'] = self.supplier_dataframe['MasterDB_Ingredients'].map(lambda x: predict_category(x,category_models,top_X))
+
+
+        # Calc C02
+        self.supplier_dataframe['CO2perKg'] = self.supplier_dataframe['Products'].map(lambda x: x.totalCO2)
+        self.supplier_dataframe['missingName'] = self.supplier_dataframe['Products'].map(lambda x: x.missingIngredients)
+        self.supplier_dataframe['Calculation'] = self.supplier_dataframe['Products'].map(lambda x: x.calculateIngredients)
+        
         saveDir = os.path.dirname(os.path.abspath(self.supplierFile.get(0.0,"end-1c")))
         saveName = os.path.join(saveDir,'output_Db_'+date_time+'.csv')
-        self.supplier_dataframe.to_csv(saveName,sep=',')
-        self.progress_bar.stop()
+        self.supplier_dataframe.to_csv(saveName,sep=',',\
+            columns=['Supplier','Product Code','Product Name','Ingredients','Calculation','CO2perKg','Category'])
+
+        #main = self.supplier_dataframe['Products'].map(lambda x: x.databaseIngredients)
+        #matched = self.supplier_dataframe['Products'].map(lambda x: x.matchedIngredients)
+
+        list_all_missing = [j for sub in self.supplier_dataframe['missingName'] for j in sub]
+        #list_all_matches = [j for sub in self.supplier_dataframe['Products'].map(lambda x: x.autoIngredients) for j in sub]
+        
+        # compute CO2 
+        self.supplier_dataframe['CO2perKg'] = self.supplier_dataframe['Ingredients']
+        
+        for product in self.supplier_dataframe['Products']:
+            goodPercentage = ~numpy.isnan(product.percentages)
+            if any(goodPercentage):
+                goodIngredients = list(compress(product.databaseIngredients,goodPercentage))
+                goodPercentageValues = [[val] for val in list(compress(product.percentages,goodPercentage))]
+                updateDictVals = dict(zip(goodIngredients,goodPercentageValues))
+                for key in updateDictVals:
+                    if key in self.percentageHistoryDict.keys():
+                        self.percentageHistoryDict[key] = self.percentageHistoryDict[key]+ updateDictVals[key]
+                    else: 
+                        self.percentageHistoryDict[key] = updateDictVals[key]
+
+
+        print("date and time:",date_time)
+
+
+        
+
         returnDict = dict()
         for key in self.percentageHistoryDict:
             minVal = numpy.min(self.percentageHistoryDict[key]) 
@@ -271,14 +362,14 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         saveName = os.path.join(saveDir,'unqiue_missing_'+date_time+'.csv')
         unique_missing_dataframe.to_csv(saveName,sep=',')
 
-        unique_matches_list = list(set(list_all_matches))
-        count = [ list_all_matches.count(match_name) for match_name in unique_matches_list ]
-        match_count = {'Count':count}
-        unique_matches_dataframe = pd.DataFrame(data=match_count, index = unique_matches_list)
-        unique_matches_dataframe.index.name = 'Match'
-        saveDir = os.path.dirname(os.path.abspath(self.supplierFile.get(0.0,"end-1c")))
-        saveName = os.path.join(saveDir,'unqiue_matched_'+date_time+'.csv')
-        unique_matches_dataframe.to_csv(saveName,sep=',')
+        #unique_matches_list = list(set(list_all_matches))
+        #count = [ list_all_matches.count(match_name) for match_name in unique_matches_list ]
+        #match_count = {'Count':count}
+        #unique_matches_dataframe = pd.DataFrame(data=match_count, index = unique_matches_list)
+        #unique_matches_dataframe.index.name = 'Match'
+        #saveDir = os.path.dirname(os.path.abspath(self.supplierFile.get(0.0,"end-1c")))
+        #saveName = os.path.join(saveDir,'unqiue_matched_'+date_time+'.csv')
+        #unique_matches_dataframe.to_csv(saveName,sep=',')
 
     @staticmethod
     def select_file(csv_title,cur_dir):

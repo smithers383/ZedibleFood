@@ -91,6 +91,21 @@ class Products:
             return returnProducts
 
     @property
+    def databaseCategories(self) -> str:
+
+        all_categories = [item.category for item in self.ingredients if len(self.ingredients) > 0 and len(item.category) > 0]
+        if self.anySubIngredients:
+            subCateogryLists = [subProduct.databaseCategories for subProduct in self.subProducts if len(subProduct.databaseIngredients) > 0 ]
+            subCategories = [category_string for listCategories in subCateogryLists for category_string in listCategories ]
+            returnCategories = all_categories+subCategories
+        else:
+            returnCategories  = all_categories
+        
+        if len(returnCategories) == 0:
+            return ''
+        else:
+            return returnCategories
+    @property
     def calculateIngredients(self) -> str:
         if len(self.ingredients) > 0:
             productName = [item.mainName if  len(item.supplierName) > 0 and len(item.mainName) > 0  else item.missingName for item in self.ingredients ]
@@ -191,8 +206,8 @@ class Products:
                 self.subProducts = [] # no longer use sub products
 
                 self.ingredientStringDict = dict()
-                print(subCO2)
-                print(supplierIngredientSet)
+                #print(subCO2)
+                #print(supplierIngredientSet)
                 return subCO2
         
         #cheeseStringList = {'milk','rennet','salt'}

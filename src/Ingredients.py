@@ -1,11 +1,17 @@
 from tkinter.messagebox import showwarning
 import numpy as np
 import pandas
+from Levenshtein import ratio
+
+THRESHOLD = 0.8
+DEBUG=True
 
 class Ingredients:
     CO2: float = np.nan
     mainName: str = ''
+    category: str = ''
     supplierName: str = ''
+    ratioName: str = ''
     matchedName: str = ''
     missingName: str = ''
     autoMatchName: str = ''
@@ -18,6 +24,13 @@ class Ingredients:
         self.defaultPercentages = defaultPercentages
         self.supplierName = supplierName
         self.lookupCO2()
+
+    @property
+    def category(self) -> str:
+        if self.mainName != '':
+            return self.mainDB['Categorie'][self.mainDB['Name EN']==self.mainName].values[0] 
+        else:
+            return ''
 
     @property
     def matchedName(self) -> str:
@@ -56,7 +69,32 @@ class Ingredients:
     def isDirectMatch(self,matchString: str,dataBase: pandas.DataFrame,title: str) -> bool:
         directMatch = dataBase[title]==matchString # Name EN
         return any(directMatch)
- 
+
+    def isRatioMatch(self,matchString: str,dataBase: pandas.DataFrame,title: str) -> bool:
+        match_found = False
+        curScore = 0
+        best_match = ''
+        for master_ingredient in dataBase["Name EN"]:
+            score = ratio(matchString, master_ingredient)
+            if score > curScore:
+                curScore = score
+                best_match =  master_ingredient
+                if curScore >= THRESHOLD and curScore:
+                    curScore = score
+                    match_found = True
+                    self.ratioName = master_ingredient
+                    if DEBUG and match_found: 
+                        print('Score: {:.2f} for {} to {}'.
+                            format(score, matchString, master_ingredient))
+                    #print('match: {} ~ {}, score: {:.2f}'.format(supplier_ingredient,master_ingredient,score))
+        
+        if DEBUG and 1 == 0:
+            if not match_found:
+                print('not matched: supplier ingr: {}, best match: {}, Score: {:.2f}'.
+                    format(matchString,best_match, curScore))
+
+        return match_found
+
     def isDirectPluralMatch(self,matchString: str,dataBase: pandas.DataFrame,title: str) -> bool:
         if self.isPlural(matchString):
             return self.isDirectMatch(matchString[:-1],dataBase,title)
@@ -81,6 +119,12 @@ class Ingredients:
         userMainTitle = 'MainDB'
         userSupplierTitle = 'SupplierDB'
         mainDBTitle = 'Name EN'
+
+        # Main DB match
+        if self.isDirectMatch(self.supplierName,self.mainDB,mainDBTitle):
+            self.mainName = self.supplierName
+            return
+
         # User Match
         if self.isDirectMatch(self.supplierName,self.userDB,userSupplierTitle): 
             self.mainName = self.userDB[userMainTitle][self.userDB[userSupplierTitle] == self.supplierName].values[0]
@@ -92,10 +136,6 @@ class Ingredients:
                 self.mainName = ''
                 showwarning(title=None, message=returnMessage)
 
-        # Main DB match
-        if self.isDirectMatch(self.supplierName,self.mainDB,mainDBTitle):
-            self.mainName = self.supplierName
-            return
 
         if self.isDirectPluralMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.supplierName[:-1]
@@ -108,6 +148,15 @@ class Ingredients:
                 return
             else:
                 self.mainName = ''
+
+
+        # Ratio Match
+        if self.isRatioMatch(self.supplierName,self.mainDB,mainDBTitle):
+            self.mainName = self.ratioName
+            self.autoMatchName = self.ratioName
+            #update user sheet for speed.
+            self.userDB = pandas.concat([self.userDB,pandas.DataFrame({'SupplierDB':self.supplierName,'MainDB':self.ratioName},[1])],ignore_index=True)
+            return
 
         if self.isCloseMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.getCloseMatch(self.supplierName,self.mainDB,mainDBTitle)
