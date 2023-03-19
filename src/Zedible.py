@@ -7,6 +7,8 @@ from parseIngredientString import parseIngredientString
 from Products import Products
 from tkinter import *
 import tkinter as tk
+
+import threading
 from tkinter import ttk
 from tkinter import filedialog as fd
 from tkinter.messagebox import showwarning
@@ -78,8 +80,11 @@ def predict_category(list_of_ingredients,category_models, top_X):
                       format(ingredient, category, score))
                 category_score[category] += score
     list_of_sorted_categories = sorted(category_score.items(), key=lambda x: x[1], reverse=True)
-    return list_of_sorted_categories[:top_X]
-
+    #return list_of_sorted_categories[:top_X]
+    try:
+        return list_of_sorted_categories[0][0]
+    except:
+        return ''
 
 class App(tk.Tk):
     def __init__(self):
@@ -170,7 +175,7 @@ Generated files are:\n\
 fraction_history_YYMMDD.csv listing the minimum, mean and maximum fraction of items in the supplier database\n\
 output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calculational data',anchor='w',justify='left')
         runLabel.pack(expand=True,fill='x',side = TOP,anchor='s',padx=5)
-        self.progress_bar = ttk.Progressbar(self,orient='horizontal',mode='determinate',length=720)
+        self.progress_bar = ttk.Progressbar(self,orient='horizontal',mode='indeterminate',length=720)
         self.progress_bar.pack(expand=True,side = TOP,padx=5, pady=5,fill="x",anchor='s') 
         self.launch_button.pack(expand=False,side = TOP, padx=5, pady=5)
         
@@ -240,10 +245,10 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
     # and stores it in the category_counts dict
     def category_counts_fn(self,x):
         self.category_counts[x.name] = {}
-        print('Category: {}, category size: {}'.format(x.name, len(x.name)))
+        #print('Category: {}, category size: {}'.format(x.name, len(x.name)))
         for row in x:
             for ingredient in row:
-                print('Row:',row)
+                #print('Row:',row)
                 for ingredient in row:
                     if ingredient not in self.category_counts[x.name]:
                         self.category_counts[x.name][ingredient] = 1
@@ -256,27 +261,22 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
 
 
     def go(self):
-        self.progress_bar.start(1000)
+        self.progress_bar.start()
         try:
             self.loadFiles()
         except:
             self.progress_bar.stop()
             showwarning(title=None, message="Failed to load one or more of the input files")
             return
+
+        processThread = threading.Thread(target=self.process_data)
+        processThread.start()
+
+    def process_data(self):   
+
         date_time = datetime.now().strftime("%m_%d_%Y_%H%M%S")
 
-        nTotal = len(self.supplier_dataframe.Ingredients)
-        CO2perKG = [float] * nTotal
-        category = [str] * nTotal
-        missing = [str] * nTotal
-        main = [str] * nTotal
-        calculate = [str] * nTotal
-        matched = [str] * nTotal
-        lastPercent = -1
-        list_all_missing = list()
-        list_all_matches = list()
-
-        
+        list_all_missing = list() 
         # parse the ingredients
         self.supplier_dataframe['Ingredients_cleaned'] = self.supplier_dataframe['Ingredients'].map(lambda x: clean_ingredients(x))
         self.autoCategory_dataframe['Ingredients_cleaned'] = self.autoCategory_dataframe['Ingredients'].map(lambda x: clean_ingredients(x))
@@ -361,7 +361,7 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         saveDir = os.path.dirname(os.path.abspath(self.supplierFile.get(0.0,"end-1c")))
         saveName = os.path.join(saveDir,'unqiue_missing_'+date_time+'.csv')
         unique_missing_dataframe.to_csv(saveName,sep=',')
-
+        self.progress_bar.stop()
         #unique_matches_list = list(set(list_all_matches))
         #count = [ list_all_matches.count(match_name) for match_name in unique_matches_list ]
         #match_count = {'Count':count}
@@ -383,6 +383,7 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         
         filetypes = (
             ('csv files','*.csv'),
+            ('xlsx files','*.xlsx'),
             ('All files','*.*')
         )
 

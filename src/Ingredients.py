@@ -130,6 +130,12 @@ class Ingredients:
             self.mainName = self.userDB[userMainTitle][self.userDB[userSupplierTitle] == self.supplierName].values[0]
             if self.isDirectMatch(self.mainName,self.mainDB,mainDBTitle): # check it is actually in mainDB
                 return
+            elif self.isRatioMatch(self.mainName,self.mainDB,mainDBTitle):
+                self.mainName = self.ratioName
+                self.autoMatchName = self.ratioName
+                #update user sheet for speed.
+                self.userDB = pandas.concat([self.userDB,pandas.DataFrame({'SupplierDB':self.supplierName,'MainDB':self.ratioName},[1])],ignore_index=True)
+                return
             else:
                 returnMessage = "Substitute name:"+self.mainName+" not found in main database\n\
                         No user substitue made for:"+self.supplierName
