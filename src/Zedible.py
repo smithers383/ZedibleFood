@@ -297,7 +297,9 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         
         category_models = category_models_fn(self.category_counts)
         top_X = 5
-        self.supplier_dataframe['Category'] = self.supplier_dataframe['MasterDB_Ingredients'].map(lambda x: predict_category(x,category_models,top_X))
+
+        # Ingredients_cleaned ignores subs automatically. 
+        self.supplier_dataframe['Category'] = self.supplier_dataframe['Ingredients_cleaned'].map(lambda x: predict_category(x,category_models,top_X))
 
 
         # Calc C02
