@@ -9,6 +9,7 @@ DEBUG=True
 class Ingredients:
     CO2: float = np.nan
     mainName: str = ''
+    mainNameNoSub: str = ''
     category: str = ''
     supplierName: str = ''
     ratioName: str = ''
@@ -59,7 +60,7 @@ class Ingredients:
     def CO2(self) -> float:
         if not len(self.mainName) == 0:
             try:
-                CO2perKg = self.mainDB['kg CO2 / kg (ohne Flug)'][self.mainDB['Name EN']==self.mainName].values[0] 
+                CO2perKg = float(self.mainDB['kg CO2 / kg (ohne Flug)'][self.mainDB['Name EN']==self.mainName].values[0]) 
             except:
                 print("help")
             return CO2perKg
@@ -123,6 +124,7 @@ class Ingredients:
         # Main DB match
         if self.isDirectMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.supplierName
+            self.mainNameNoSub = self.mainName
             return
 
         # User Match
@@ -145,20 +147,25 @@ class Ingredients:
 
         if self.isDirectPluralMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.supplierName[:-1]
+            self.mainNameNoSub = self.mainName
             return
         
         # User Plural Match
         if self.isDirectPluralMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.userDB[userMainTitle][self.userDB[userSupplierTitle] == self.supplierName[:-1]].values[0]
+            self.mainNameNoSub = self.mainName
             if self.isDirectMatch(self.mainName,self.mainDB,mainDBTitle): # check it is actually in mainDB
                 return
             else:
                 self.mainName = ''
+                self.mainNameNoSub = self.mainName
 
 
         # Ratio Match
         if self.isRatioMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.ratioName
+            self.mainNameNoSub = self.mainName
+
             self.autoMatchName = self.ratioName
             #update user sheet for speed.
             self.userDB = pandas.concat([self.userDB,pandas.DataFrame({'SupplierDB':self.supplierName,'MainDB':self.ratioName},[1])],ignore_index=True)
@@ -166,6 +173,7 @@ class Ingredients:
 
         if self.isCloseMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.getCloseMatch(self.supplierName,self.mainDB,mainDBTitle)
+            self.mainNameNoSub = self.mainName
             self.autoMatchName = self.mainName
         # it is missing :(
 

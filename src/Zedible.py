@@ -60,10 +60,10 @@ def category_models_fn(category_counts):
                 category_models[ingredient] = {}
                 # Keep track of how many times each ingredient is mapped to a category
                 if category not in category_models[ingredient]:
-                    category_models[ingredient][category] = ingredient_count
+                    category_models[ingredient][category] = ingredient_count/len(tmp)
             else:
                 if category not in category_models[ingredient]:
-                    category_models[ingredient][category] = ingredient_count
+                    category_models[ingredient][category] = ingredient_count/len(tmp)
     return category_models
 
 def predict_category(list_of_ingredients,category_models, top_X):
@@ -286,20 +286,22 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         
         # extract main db ingredients
         self.supplier_dataframe['MasterDB_Ingredients'] = self.supplier_dataframe['Products'].map(lambda x: x.databaseIngredients) 
-        self.autoCategory_dataframe['MasterDB_Ingredients'] = self.autoCategory_dataframe['Products'].map(lambda x: x.databaseIngredients)
+        self.supplier_dataframe['MasterDB_Ingredients_noSub'] = self.supplier_dataframe['Products'].map(lambda x: x.databaseIngredients_noSub) 
+        self.supplier_dataframe['MasterDB_Ingredients'] = self.supplier_dataframe['Products'].map(lambda x: x.databaseIngredients) 
+        self.autoCategory_dataframe['MasterDB_Ingredients_noSub'] = self.autoCategory_dataframe['Products'].map(lambda x: x.databaseIngredients_noSub)
 
         self.category_counts = {}
         #tmp = self.autoCategory_dataframe.groupby('MasterDB_Categories')['MasterDB_Ingredients'].apply(category_counts_fn)
         #for this_category in category_names:
         #    category_counts[this_category] = category_counts_fn(self.autoCategory_dataframe,this_category)
-        self.autoCategory_dataframe.groupby('Category')['MasterDB_Ingredients'].apply(self.category_counts_fn)
+        self.autoCategory_dataframe.groupby('Category')['Ingredients_cleaned'].apply(self.category_counts_fn)
         #tmp = self.supplier_dataframe.groupby('Category')['Ingredients_normalized'].apply(lambda x: category_counts_fn(x,category_names))
         
         category_models = category_models_fn(self.category_counts)
         top_X = 5
 
         # Ingredients_cleaned ignores subs automatically. 
-        self.supplier_dataframe['Category'] = self.supplier_dataframe['Ingredients_cleaned'].map(lambda x: predict_category(x,category_models,top_X))
+        self.supplier_dataframe['Category'] = self.supplier_dataframe['MasterDB_Ingredients_noSub'].map(lambda x: predict_category(x,category_models,top_X))
 
 
         # Calc C02

@@ -75,6 +75,22 @@ class Products:
 
 
     @property
+    def databaseIngredients_noSub(self) -> str:
+
+        product = [item.mainNameNoSub for item in self.ingredients if len(self.ingredients) > 0 and len(item.mainNameNoSub) > 0]
+        if self.anySubIngredients:
+            subProductsLists = [subProduct.databaseIngredients_noSub for subProduct in self.subProducts if len(subProduct.databaseIngredients_noSub) > 0 ]
+            subProducts = [product for listProducts in subProductsLists for product in listProducts ]
+            returnProducts = product+subProducts
+        else:
+            returnProducts  = product
+        
+        if len(returnProducts) == 0:
+            return ''
+        else:
+            return returnProducts
+    
+    @property
     def databaseIngredients(self) -> str:
 
         product = [item.mainName for item in self.ingredients if len(self.ingredients) > 0 and len(item.mainName) > 0]
@@ -89,7 +105,7 @@ class Products:
             return ''
         else:
             return returnProducts
-
+        
     @property
     def databaseCategories(self) -> str:
 
@@ -185,7 +201,7 @@ class Products:
             returnCO2 = ingredientCO2
         else:
             subProductCO2 = [product.totalCO2 for product in self.subProducts]       
-            returnCO2 = [CO2[0] if not numpy.isnan(CO2[0]) else CO2[1] \
+            returnCO2 = [float(CO2[0]) if not numpy.isnan(float(CO2[0])) else float(CO2[1]) \
                 for CO2 in zip(ingredientCO2,subProductCO2)]          
         return returnCO2
     
@@ -225,9 +241,10 @@ class Products:
             self.calcPercentages = calcPercentages
             return numpy.nan
 
-        isGoodCO2 = ~numpy.isnan(self.CO2)
+        isGoodCO2 = ~pandas.isnull(self.CO2)
+     
         validPercentages = list(compress(self.percentages,isGoodCO2))
-        goodCO2 = list(compress(self.CO2,isGoodCO2))
+        goodCO2 = numpy.array([float(x) for x in (compress(self.CO2,isGoodCO2))])
         if not any(isGoodCO2):
             self.calcPercentages = calcPercentages
             return numpy.nan
