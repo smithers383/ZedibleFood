@@ -1,6 +1,7 @@
 from tkinter.messagebox import showwarning
 import numpy as np
 import pandas
+ratioDB = pandas.DataFrame(columns=['SupplierDB','MainDB'])
 from Levenshtein import ratio
 
 THRESHOLD = 0.6
@@ -24,7 +25,6 @@ class Ingredients:
         self.userDB = userDB
         self.defaultPercentages = defaultPercentages
         self.supplierName = supplierName
-        self.lookupCO2()
 
     @property
     def category(self) -> str:
@@ -71,7 +71,13 @@ class Ingredients:
         directMatch = dataBase[title]==matchString # Name EN
         return any(directMatch)
 
-    def isRatioMatch(self,matchString: str,dataBase: pandas.DataFrame,title: str) -> bool:
+    def isRatioMatch(self,matchString: str,dataBase: pandas.DataFrame,title: str,) -> bool:
+        global ratioDB
+        if any(ratioDB['SupplierDB']==matchString):
+            self.ratioName = ratioDB['MainDB'][ratioDB['SupplierDB']==matchString].values[0]
+            return True
+            
+
         match_found = False
         curScore = 0
         best_match = ''
@@ -93,7 +99,8 @@ class Ingredients:
             if not match_found:
                 print('not matched: supplier ingr: {}, best match: {}, Score: {:.2f}'.
                     format(matchString,best_match, curScore))
-
+        if match_found:
+            ratioDB = pandas.concat([ratioDB,pandas.DataFrame({'SupplierDB':matchString,'MainDB':self.ratioName},[1])],ignore_index=True)
         return match_found
 
     def isDirectPluralMatch(self,matchString: str,dataBase: pandas.DataFrame,title: str) -> bool:
@@ -132,15 +139,16 @@ class Ingredients:
             self.mainName = self.userDB[userMainTitle][self.userDB[userSupplierTitle] == self.supplierName].values[0]
             if self.isDirectMatch(self.mainName,self.mainDB,mainDBTitle): # check it is actually in mainDB
                 return
-            elif self.isRatioMatch(self.mainName,self.mainDB,mainDBTitle):
+            ratioMatch = self.isRatioMatch(self.mainName,self.mainDB,mainDBTitle)
+            if ratioMatch:
                 self.mainName = self.ratioName
                 self.autoMatchName = self.ratioName
                 #update user sheet for speed.
-                self.userDB = pandas.concat([self.userDB,pandas.DataFrame({'SupplierDB':self.supplierName,'MainDB':self.ratioName},[1])],ignore_index=True)
-                return
+                return # updatedDB
             else:
                 returnMessage = "Substitute name:"+self.mainName+" not found in main database\n\
-                        No user substitue made for:"+self.supplierName
+                    No user substitue made for:"+self.supplierName
+
                 self.mainName = ''
                 showwarning(title=None, message=returnMessage)
 
@@ -162,13 +170,12 @@ class Ingredients:
 
 
         # Ratio Match
+        
         if self.isRatioMatch(self.supplierName,self.mainDB,mainDBTitle):
             self.mainName = self.ratioName
             self.mainNameNoSub = self.mainName
 
             self.autoMatchName = self.ratioName
-            #update user sheet for speed.
-            self.userDB = pandas.concat([self.userDB,pandas.DataFrame({'SupplierDB':self.supplierName,'MainDB':self.ratioName},[1])],ignore_index=True)
             return
 
         if self.isCloseMatch(self.supplierName,self.mainDB,mainDBTitle):

@@ -1,6 +1,9 @@
 
-from cProfile import run
+global ratioDB 
 import pandas as pd
+ratioDB = pd.DataFrame(columns=['SupplierDB','MainDB'])
+
+from cProfile import run
 import numpy
 from datetime import datetime
 from parseIngredientString import parseIngredientString
@@ -15,19 +18,22 @@ from tkinter.messagebox import showwarning
 import os
 from itertools import compress
 
-def read_file(file_str,header_skip,col_numbers,col_names):
+def read_file(file_str,header_skip,col_numbers,col_names,col_dtype=str):
     try:
         return_db = pd.read_excel(file_str,
                 header=header_skip,
                 usecols=col_numbers,
                 names=col_names)
+        
     except:
         return_db = pd.read_csv(file_str,
                 delimiter=',',
                 header=header_skip,
                 usecols=col_numbers,
                 names=col_names,
-                encoding='latin-1')
+                encoding='latin-1',
+                dtype=col_dtype)
+    return_db = return_db.dropna(how='all')
     return return_db
 
 def clean_ingredients(ingredientString):
@@ -45,8 +51,6 @@ def clean_ingredients(ingredientString):
             returnMessage = "Failed to parse ingredient string: "+ ingredientString  
             showwarning(title=None, message=returnMessage)
     return parsedIngredientString
-
-
 
 def category_models_fn(category_counts):
     top_X = 20
@@ -116,34 +120,48 @@ class App(tk.Tk):
 
        
     def addButons(self):  
-
+        hjsPC=False
         main_text =   'Main Database File'
         main_help_text = 'Comma seperated file with 5 columns: Kategorie, Name DE, Name EN, CO2 / 1.6FU (ohne Flug), kg CO2 / kg (ohne Flug).\n\
 The file should have a headerline.'
         [self.mainDBframe,self.mainFile] = self.textFieldWithButton(self,main_text,main_help_text)
-        self.mainFile.insert(INSERT,"/Users/edbrown/Desktop/Zedible Algo/inputs/Master Db (v3).csv")
+        if hjsPC:
+            self.mainFile.insert(INSERT,"C:\Projects\Test\Master Db (v8) LCA BCD.csv")
+        else:
+            self.mainFile.insert(INSERT,"/Users/edbrown/Desktop/Zedible Algo/inputs/Master Db (v3).csv")
         sub_help_text = 'Comma seperated file with 2 columns: Supplier Database Name EN, Main Database Name EN.\n\
 The file must have a headerline.'
         substitue_text = 'Substitutions Database File'
         [self.subDBframe,self.subFile] = self.textFieldWithButton(self,substitue_text,sub_help_text)
-        self.subFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/substitutions.csv')
+        if hjsPC:
+            self.subFile.insert(INSERT,"C:\Projects\Test\Substitutions v7.4_Anna .xlsx")
+        else:
+            self.subFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/substitutions.csv')
         supplier_help_text = "Comma seperated file with 5 columns: Supplier, Product Code, Product Name, Case Size, Ingredients.\n\
 The file must have a headerline."
         supplier_text = 'Supplier Database File'
         [self.supplierDBframe, self.supplierFile] = self.textFieldWithButton(self,supplier_text,supplier_help_text)
-        self.supplierFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/Supplier DB.csv')
-        
+        if hjsPC:
+            self.supplierFile.insert(INSERT,"C:\Projects\Test\IllycaffŠ UK Limited.csv")
+        else:
+            self.supplierFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/Supplier DB.csv')
         default_percentage_help_text="Comma seperated file with 3 columns: E Number, Name EN and Fraction.\n\
 The file must have a headerline."
         default_percent_text = 'Default Percentages File'
         [self.defaultDBframe,self.defaultFile] = self.textFieldWithButton(self,default_percent_text,default_percentage_help_text)
-        self.defaultFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/defaultPercentages2.csv')
+        if hjsPC:
+            self.defaultFile.insert(INSERT,"C:\Projects\Test\defaultPercentages2_HJS.xlsx")
+        else:
+            self.defaultFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/defaultPercentages2.csv')
         
         auto_sub_products = 'Automatic Sub-ingredient file'
         auto_product_help_text = "Comma seperated file with 3 columns: List of ingredients to replace,CO2 to use and Main DB name.\n\
 The file must have a headerline. The list of ingredients needs to be semicolon (;) seperated"
         [self.autoProductDBframe,self.autoProductFile] = self.textFieldWithButton(self,auto_sub_products,auto_product_help_text)
-        self.autoProductFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/autoIngredientReplacements.csv')
+        if hjsPC:
+            self.autoProductFile.insert(INSERT,"C:\Projects\Test/autoIngredientReplacements (2).csv")
+        else:
+            self.autoProductFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/autoIngredientReplacements.csv')
         launch_text = 'Run'
         self.launch_button = tk.Button(
             self,
@@ -155,7 +173,10 @@ The file must have a headerline. The list of ingredients needs to be semicolon (
         auto_category_help_text = "Comma seperated file with 6 columns: Supplier, Product Code, Product Name, Case Size, Ingredients and Category.\n\
 The file must have a headerline."
         [self.autoCategoryDBframe,self.autoCategoryFile] = self.textFieldWithButton(self,auto_category,auto_category_help_text)
-        self.autoCategoryFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/Harvey & Brockless Supplier data (Anna Fe).xlsx')
+        if hjsPC:   
+            self.autoCategoryFile.insert(INSERT,"C:\Projects\Test\Categories (Anna Fe) V2 (1).xlsx")
+        else:
+            self.autoCategoryFile.insert(INSERT,'/Users/edbrown/Desktop/Zedible Algo/inputs/Harvey & Brockless Supplier data (Anna Fe).xlsx')
         launch_text = 'Run'
         self.launch_button = tk.Button(
             self,
@@ -238,7 +259,10 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         self.autoCategory_dataframe = self.autoCategory_dataframe.apply(lambda x: self.lowerCase(x)) 
 
     def process_ingredients(self,parsedIngredientDict):
+        global ratioDB
         product = Products(parsedIngredientDict,self.master_dataframe,self.userDB,self.default_percentagaes_dataframe,self.autoProduct_dataframe)  
+        product.ingredients = product.getIngredients()
+        product.subProducts = product.getSubProducts()
         return product
 
     # This function takes each group and then calculates the word frequency for the ingredients
@@ -255,12 +279,24 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
                     else:
                         self.category_counts[x.name][ingredient] += 1 # Increase count for this ingredient
 
+    def category_counts_big_fn(self,x):
+        self.category_counts[x.name_big] = {}
+        #print('Category: {}, category size: {}'.format(x.name, len(x.name)))
+        for row in x:
+            for ingredient in row:
+                #print('Row:',row)
+                for ingredient in row:
+                    if ingredient not in self.category_counts[x.name]:
+                        self.category_counts[x.name][ingredient] = 1
+                    else:
+                        self.category_counts[x.name][ingredient] += 1 # Increase count for this ingredient
     @staticmethod
     def lowerCase(inputVar):
         return [var.lower() if isinstance(var,str) else var for var in inputVar]
 
 
     def go(self):
+        
         try:
             self.loadFiles()
         except:
@@ -272,7 +308,8 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         processThread.start()
 
     def process_data(self):   
-
+        global ratioDB
+        
         date_time = datetime.now().strftime("%m_%d_%Y_%H%M%S")
 
         list_all_missing = list() 

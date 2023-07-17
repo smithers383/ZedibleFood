@@ -1,6 +1,7 @@
 from logging import exception
 import numpy
 import pandas
+ratioDB = pandas.DataFrame(columns=['SupplierDB','MainDB'])
 from Ingredients import Ingredients
 from itertools import compress
 import warnings
@@ -13,16 +14,18 @@ class Products:
             mainDB: pandas.DataFrame,\
             userDB: pandas.DataFrame,\
             defaultPercentages: pandas.DataFrame,\
-            autoProductDB: pandas.DataFrame):
-
+            autoProductDB: pandas.DataFrame,):
+        global ratioDB 
         self.ingredientStringDict = ingredientStringDict
         self.mainDB = mainDB
         self.userDB = userDB
         self.autoProductDB = autoProductDB
         self.defaultPercentages = defaultPercentages
+        
+        
         self.calcPercentages = []
-        self.ingredients = self.getIngredients()
-        self.subProducts = self.getSubProducts()
+        #self.ingredients = self.getIngredients()
+        #self.subProducts = self.getSubProducts()
         
         
     @property
@@ -184,16 +187,23 @@ class Products:
     
     
     def getIngredients(self):
-        return [Ingredients(ingredientStr,self.mainDB,self.userDB,self.defaultPercentages) for ingredientStr in self.ingredientStringDict]
-
+        global ratioDB
+        ingredientList = [Ingredients(ingredientStr,self.mainDB,self.userDB,self.defaultPercentages) for ingredientStr in self.ingredientStringDict]
+        for ingredient in ingredientList:
+            ingredient.lookupCO2()
+        return ingredientList
     @property
     def anySubIngredients(self):
         return any([len(self.ingredientStringDict[ingredientStr][1])>0 for ingredientStr in self.ingredientStringDict])
 
     def getSubProducts(self):   
-        return [Products(self.ingredientStringDict[ingredient.supplierName][1],self.mainDB,self.userDB,self.defaultPercentages,self.autoProductDB)\
+        global ratioDB
+        productList = [Products(self.ingredientStringDict[ingredient.supplierName][1],self.mainDB,self.userDB,self.defaultPercentages,self.autoProductDB)\
              for ingredient in self.ingredients]
-
+        for product in productList:
+            product.ingredients = product.getIngredients()
+            product.subProducts = product.getSubProducts()
+        return productList
     @property
     def CO2(self) -> list:
         ingredientCO2 = [subIngredient.CO2 for subIngredient in self.ingredients]
@@ -207,6 +217,7 @@ class Products:
     
     @property
     def totalCO2(self) -> float:
+        global ratioDB
         # auto sub calculations
         supplierIngredientSet = set([subIngredient.supplierName for subIngredient in self.ingredients])
         mainIngredientSet = set([subIngredient.mainName for subIngredient in self.ingredients])
