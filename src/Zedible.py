@@ -331,7 +331,7 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         #tmp = self.autoCategory_dataframe.groupby('MasterDB_Categories')['MasterDB_Ingredients'].apply(category_counts_fn)
         #for this_category in category_names:
         #    category_counts[this_category] = category_counts_fn(self.autoCategory_dataframe,this_category)
-        self.autoCategory_dataframe.groupby('Category')['Ingredients_cleaned'].apply(self.category_counts_fn)
+        self.autoCategory_dataframe.groupby('Category',group_keys=False)['Ingredients_cleaned'].apply(self.category_counts_fn)
         #tmp = self.supplier_dataframe.groupby('Category')['Ingredients_normalized'].apply(lambda x: category_counts_fn(x,category_names))
         
         category_models = category_models_fn(self.category_counts)
