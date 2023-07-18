@@ -149,20 +149,20 @@ class Products:
     def getDefaultPercentage(self,ingredient: str) -> float:
         matchItem = self.defaultPercentages['Item']==ingredient
         if any(matchItem): # try ingredient
-            return self.defaultPercentages['Fraction'][matchItem].values[0]
+            return float(self.defaultPercentages['Fraction'][matchItem].values[0])
         match_E_Number= self.defaultPercentages['E_Number']==ingredient
         if any(match_E_Number): # try Enumber
-            return self.defaultPercentages['Fraction'][match_E_Number].values[0]
+            return float(self.defaultPercentages['Fraction'][match_E_Number].values[0])
         # try user sub
         if not any(self.userDB['SupplierDB'] == ingredient):
             return numpy.nan
         ingredient = self.userDB['MainDB'][self.userDB['SupplierDB'] == ingredient].values[0]
         matchItem = self.defaultPercentages['Item']==ingredient
         if any(matchItem): # try ingredient
-            return self.defaultPercentages['Fraction'][matchItem].values[0]
+            return float(self.defaultPercentages['Fraction'][matchItem].values[0])
         match_E_Number= self.defaultPercentages['E_Number']==ingredient
         if any(match_E_Number): # try Enumber
-            return self.defaultPercentages['Fraction'][match_E_Number].values[0]
+            return float(self.defaultPercentages['Fraction'][match_E_Number].values[0])
         return numpy.nan
 
     @property
