@@ -31,7 +31,7 @@ async def create_upload_files(
             file_object.write(file.file.read())
         file.tmp = file_location
 
-    # Zedible.load_web_files(Zedible, files)
+    Zedible.load_web_files(Zedible, files)
     # Zedible.process_data(Zedible)
 
     output = f"{tmpdir.name}/output.zip"
