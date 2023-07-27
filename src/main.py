@@ -6,6 +6,9 @@ import os
 from Zedible import App as Zedible
 app = FastAPI()
 
+import matplotlib
+matplotlib.use('Agg')
+
 @app.post("/upload")
 async def create_upload_files(
     autoProduct: UploadFile = File(),
