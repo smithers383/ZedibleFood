@@ -2,6 +2,7 @@ import tempfile
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import HTMLResponse, StreamingResponse
 import zipfile
+import os
 from Zedible import App as Zedible
 app = FastAPI()
 
@@ -15,6 +16,8 @@ async def create_upload_files(
     autoCategory: UploadFile = File()
 ):
     tmpdir = tempfile.TemporaryDirectory()
+    output_dir = os.path.join(tmpdir.name, 'output')
+    os.mkdir(output_dir)
 
     files = [
         autoProduct,
@@ -31,17 +34,26 @@ async def create_upload_files(
             file_object.write(file.file.read())
         file.tmp = file_location
 
-    Zedible.load_web_files(Zedible, files)
-    # Zedible.process_data(Zedible)
+    zed = Zedible()
+    zed.supplierFile.delete("1.0", "end")
+    zed.supplierFile.insert("1.0", f"{output_dir}/1")
+    zed.load_web_files(files)
+    zed.process_data()
 
-    output = f"{tmpdir.name}/output.zip"
+    print(output_dir)
 
-    with zipfile.ZipFile(output, 'w') as zipf:
-        for file in files:
-            zipf.write(f"{tmpdir.name}/{file.filename}")
+    output_zip = f"{tmpdir.name}/output.zip"
+
+    with zipfile.ZipFile(output_zip, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for folder_name, subfolders, filenames in os.walk(output_dir):
+            print(filenames)
+            for filename in filenames:
+                file_path = os.path.join(folder_name, filename)
+                relative_path = os.path.relpath(file_path, output_dir)
+                zipf.write(file_path, arcname=relative_path)
 
     try:
-        return StreamingResponse(open(output, "rb"), media_type="application/zip")
+        return StreamingResponse(open(output_zip, "rb"), media_type="application/zip")
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
 

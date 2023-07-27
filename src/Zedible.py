@@ -206,45 +206,32 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         text_field.insert(INSERT,self.select_file(text,curr_dir))
 
     def load_web_files(self, files):
-
-        # harvey.xlsx
         self.autoProduct_dataframe = read_file(files[0].tmp, 0, [0, 1, 2], ['Ingredients', 'CO2', 'Name'])
-
-        # supplierdb
         self.supplier_dataframe = read_file(
             files[1].tmp,
             0,
             [0, 1, 2, 3, 4],
             ['Supplier', 'Product Code', 'Product Name', 'Case Size', 'Ingredients']
         )
-
-        # master Db
         self.master_dataframe = read_file(
             files[2].tmp,
             0,
             [0, 1, 2, 4],
             ['Categorie', 'Name DE', 'Name EN', 'kg CO2 / kg (ohne Flug)']
         )
-
-        # subsitutions.csv
         self.userDB = read_file(files[3].tmp, 0, [0, 1], ['SupplierDB', 'MainDB'])
-
-        # default percent
         self.default_percentagaes_dataframe = read_file(
             files[4].tmp,
             0,
             [0, 1, 2],
             ['E_Number', 'Item', 'Fraction']
         )
-
-        # cat.xlsx
         self.autoCategory_dataframe = read_file(
             files[5].tmp,
             0,
             [0, 1, 2, 3, 4, 5, 6],
             ['Supplier', 'Product Code', 'Product Name', 'Ingredients', 'CalcIngredients', 'CO2perKg', 'Category']
         )
-
         self.supplier_dataframe = self.supplier_dataframe.apply(lambda x: self.lowerCase(x))
         self.master_dataframe = self.master_dataframe.apply(lambda x: self.lowerCase(x))
         self.default_percentagaes_dataframe = self.default_percentagaes_dataframe.apply(lambda x: self.lowerCase(x))
