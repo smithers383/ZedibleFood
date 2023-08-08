@@ -100,7 +100,7 @@ class App(tk.Tk):
         self.addButons()
         self.minsize(800, 500)
         #self.geometry("800x500+200+200")
-        self.iconbitmap("Zedible_Branding_STG05_Brandmark.ico")
+        # self.iconbitmap("Zedible_Branding_STG05_Brandmark.ico")
         self.percentageHistoryDict = dict()
 
     def textFieldWithButton(self,outerFrame: Frame,frame_text: str,help_text: str) -> Frame:
@@ -199,16 +199,47 @@ output_Db_YYMMDD.csv listing the updated supplier database with CO2/kg and calcu
         self.progress_bar = ttk.Progressbar(self,orient='horizontal',mode='indeterminate',length=720)
         self.progress_bar.pack(expand=True,side = TOP,padx=5, pady=5,fill="x",anchor='s') 
         self.launch_button.pack(expand=False,side = TOP, padx=5, pady=5)
-        
-        
-        
-        
+
     def fill_text_field(self,text: str,text_field: Frame):
         curr_dir = text_field.get(0.0,"end-1c")
         text_field.delete(1.0,"end-1c")
         text_field.insert(INSERT,self.select_file(text,curr_dir))
 
-    def loadFiles(self):    
+    def load_web_files(self, files):
+        self.autoProduct_dataframe = read_file(files[0].tmp, 0, [0, 1, 2], ['Ingredients', 'CO2', 'Name'])
+        self.supplier_dataframe = read_file(
+            files[1].tmp,
+            0,
+            [0, 1, 2, 3, 4],
+            ['Supplier', 'Product Code', 'Product Name', 'Case Size', 'Ingredients']
+        )
+        self.master_dataframe = read_file(
+            files[2].tmp,
+            0,
+            [0, 1, 2, 4],
+            ['Categorie', 'Name DE', 'Name EN', 'kg CO2 / kg (ohne Flug)']
+        )
+        self.userDB = read_file(files[3].tmp, 0, [0, 1], ['SupplierDB', 'MainDB'])
+        self.default_percentagaes_dataframe = read_file(
+            files[4].tmp,
+            0,
+            [0, 1, 2],
+            ['E_Number', 'Item', 'Fraction']
+        )
+        self.autoCategory_dataframe = read_file(
+            files[5].tmp,
+            0,
+            [0, 1, 2, 3, 4, 5, 6],
+            ['Supplier', 'Product Code', 'Product Name', 'Ingredients', 'CalcIngredients', 'CO2perKg', 'Category']
+        )
+        self.supplier_dataframe = self.supplier_dataframe.apply(lambda x: self.lowerCase(x))
+        self.master_dataframe = self.master_dataframe.apply(lambda x: self.lowerCase(x))
+        self.default_percentagaes_dataframe = self.default_percentagaes_dataframe.apply(lambda x: self.lowerCase(x))
+        self.userDB = self.userDB.apply(lambda x: self.lowerCase(x))
+        self.autoProduct_dataframe = self.autoProduct_dataframe.apply(lambda x: self.lowerCase(x))
+        self.autoCategory_dataframe = self.autoCategory_dataframe.apply(lambda x: self.lowerCase(x))
+
+    def loadFiles(self):
         mainFileStr = self.mainFile.get(0.0,"end-1c")
         subFileStr = self.subFile.get(0.0,"end-1c")
         defaultFileStr = self.defaultFile.get(0.0,"end-1c")
