@@ -6,8 +6,8 @@ import os
 from Zedible import App as Zedible
 app = FastAPI()
 
-import matplotlib
-matplotlib.use('Agg')
+os.system('Xvfb :1 -screen 0 1600x1200x16  &')
+os.environ['DISPLAY']=':1.0'
 
 @app.post("/upload")
 async def create_upload_files(
@@ -65,8 +65,22 @@ async def create_upload_files(
 @app.get("/")
 async def main():
     content = """
+<head>
+    <title>Form Submission</title>
+    <script>
+        function replaceFormWithMessage() {
+            // Replace the form with a thank you message
+            var form = document.querySelector('form');
+            form.style.display = 'none';
+
+            var thanksMessage = document.createElement('p');
+            thanksMessage.textContent = 'Thanks for submitting the form!';
+            document.body.appendChild(thanksMessage);
+        }
+    </script>
+</head>
 <body>
-    <form action="/upload" enctype="multipart/form-data" method="post">
+    <form action="/upload" enctype="multipart/form-data" method="post" onsubmit="replaceFormWithMessage();">
         <div>
             <label for="master">Main Database File</label>
             <p>
@@ -77,7 +91,7 @@ async def main():
             <input id=master name="master" type="file" required>
         </div>
         <hr>
-        
+
         <div>
             <label for="userDB">Substitutions Database File</label>
             <p>
@@ -88,7 +102,7 @@ async def main():
             <input id=userDB name="userDB" type="file" required>
         </div>
         <hr>
-        
+
         <div>
             <label for="supplier">Supplier Database File</label>
             <p>
@@ -110,7 +124,7 @@ async def main():
             <input id=default_percentagaes name="default_percentagaes" type="file" required>
         </div>
         <hr>
-        
+
         <div>
             <label for="autoProduct">Automatic Sub-ingredient file</label>
             <p>
@@ -121,7 +135,7 @@ async def main():
             <input id=autoProduct name="autoProduct" type="file" required>
         </div>
         <hr>
-        
+
         <div>
             <label for="autoCategory">Reference Supplier Product to Category Matching File</label>
             <p>
